@@ -1,4 +1,4 @@
-# Helios
+# Project Codename: Helios
 
 ![Helios Web QA Dashboard](./public/brand/helios-banner.png)
 
