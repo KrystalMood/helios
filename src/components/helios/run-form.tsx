@@ -18,13 +18,13 @@ export function RunForm({ onSubmit, isDisabled = false }: RunFormProps) {
             type="url"
             name="url"
             id="url-target"
-            className="flex-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex-1 w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground outline-none disabled:cursor-not-allowed disabled:opacity-60 focus:ring-1 focus:ring-accent"
             placeholder="https://example.com"
             disabled={isDisabled}
             required
           />
           <button
-            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-background sm:w-auto disabled:cursor-not-allowed disabled:opacity-70"
+            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-background sm:w-auto disabled:cursor-not-allowed disabled:opacity-70 transition hover:opacity-90"
             type="submit"
             disabled={isDisabled}
           >

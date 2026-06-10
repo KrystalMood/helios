@@ -1,8 +1,11 @@
 "use client";
 import { useState } from "react";
 import type { LatestRun } from "@/lib/helios/types";
+
+import { AppHeader } from "@/components/helios/app-header";
 import { RunForm } from "@/components/helios/run-form";
 import { LatestRunPanel } from "@/components/helios/latest-run-panel";
+import { DashboardHero } from "@/components/helios/dashboard-hero";
 
 export default function Home() {
   const [latestRun, setLatestRun] = useState<LatestRun | null>(null);
@@ -18,21 +21,25 @@ export default function Home() {
 
     const now = new Date();
     const runId = `run_${now.getTime()}`;
+    const startTime = now.getTime();
 
     setLatestRun({
       id: runId,
       startingUrl: url,
       status: "Queued",
-      createdAt: now.toISOString(),
       trail: [
         {
           label: "QA run queued",
           detail: "Waiting to launch a browser session.",
+          timestamp: now.toISOString(),
         },
       ],
+      summary: "QA run queued and waiting to start.",
+      createdAt: now.toISOString(),
     });
 
     setTimeout(() => {
+      const runningAt = new Date();
       setLatestRun((prev) => {
         if (!prev || prev.id !== runId) return prev;
         return {
@@ -43,13 +50,17 @@ export default function Home() {
             {
               label: "QA agent is running",
               detail: "Browser session is being launched.",
+              timestamp: runningAt.toISOString(),
             },
           ],
+          summary: "Helios is running a fake browser QA check.",
         };
       });
     }, 1000);
 
     setTimeout(() => {
+      const completedAt = new Date();
+      const durationMs = completedAt.getTime() - startTime;
       setLatestRun((prev) => {
         if (!prev || prev.id !== runId) return prev;
         return {
@@ -60,32 +71,43 @@ export default function Home() {
             {
               label: "Navigated to URL",
               detail: "Helios navigated the browser to the submitted URL.",
+              timestamp: completedAt.toISOString(),
             },
             {
               label: "Page loaded",
               detail: "The page reached a loaded state.",
+              timestamp: completedAt.toISOString(),
             },
             {
               label: "Desktop screenshot captured",
               detail: "Desktop viewport screenshot was captured.",
+              timestamp: completedAt.toISOString(),
             },
             {
               label: "Mobile screenshot captured",
               detail: "Mobile viewport screenshot was captured.",
+              timestamp: completedAt.toISOString(),
             },
             {
               label: "Console logs collected",
               detail: "Console logs were collected for review.",
+              timestamp: completedAt.toISOString(),
             },
             {
               label: "Network failures checked",
               detail: "Failed network requests were checked.",
+              timestamp: completedAt.toISOString(),
             },
             {
               label: "QA run completed",
               detail: "Browser session has been finished.",
+              timestamp: completedAt.toISOString(),
             },
           ],
+          summary:
+            "Completed fake QA run with screenshots, logs, and network checks simulated.",
+          finishedAt: completedAt.toISOString(),
+          durationMs: durationMs,
         };
       });
     }, 3000);
@@ -97,17 +119,11 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
+      <AppHeader />
+
       <div className="py-10 px-6 mx-auto max-w-5xl">
-        <header>
-          <h1 className="text-4xl font-semibold tracking-tight">Helios</h1>
-          <p className="mt-3 max-w-2xl text-muted">
-            Run QA checks with screenshots, evidence, and replayable browser
-            trails.
-          </p>
-        </header>
-
+        <DashboardHero />
         <RunForm onSubmit={handleSubmit} isDisabled={isRunActive} />
-
         <LatestRunPanel latestRun={latestRun} onReset={handleReset} />
       </div>
     </main>

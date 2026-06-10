@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Helios",
-  description: "Browser agent with evidence and replayable trails.",
+  description: "QA observability dashboard for evidence-backed browser runs.",
 };
 
 export default function RootLayout({

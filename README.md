@@ -1,25 +1,31 @@
 # Helios
 
-Helios adalah dashboard QA web berbasis agent yang membantu developer mengecek kualitas halaman web dari satu URL.
+![Helios Web QA Dashboard](./public/brand/helios-banner.png)
 
-Ide awalnya sederhana:
+Helios adalah QA observability dashboard untuk browser-based website checks. Fokus utamanya bukan cuma menemukan masalah, tapi membuat setiap QA run bisa diamati ulang lewat browser trail, screenshot, logs, artifacts, dan evidence.
 
-1. User memasukkan URL website.
-2. Sistem menjalankan browser automation.
-3. Argos mengambil screenshot desktop dan mobile.
-4. Helios mencatat console error, failed request, dan masalah dasar lain.
-5. Hasilnya ditampilkan sebagai report yang mudah dibaca.
+> Evidence-based website QA powered by replayable browser runs.
 
-Untuk tahap awal, project ini belum fokus ke AI dulu. Core pertamanya adalah automation pipeline yang stabil. Setelah itu baru ditambah AI untuk merangkum temuan dan memberi saran perbaikan.
+## Core Loop
+
+1. User memasukkan starting URL.
+2. Helios membuat QA run.
+3. Browser runner membuka halaman target.
+4. Sistem mengumpulkan screenshot, console logs, network failures, dan trail steps.
+5. Dashboard menampilkan summary, findings, artifacts, dan evidence yang bisa diinspeksi.
+
+Untuk tahap awal, Helios belum fokus ke AI. Core pertamanya adalah dashboard dan automation pipeline yang stabil. Setelah evidence layer kuat, AI bisa ditambahkan untuk membuat report dan suggested next actions.
 
 ## MVP
 
 - Input target URL
-- Run scan manual
+- Fake QA run lifecycle: queued, running, completed
+- Browser trail/timeline
+- Basic QA summary
 - Screenshot desktop dan mobile
-- Capture console error
-- Capture failed network request
-- Tampilkan report scan di dashboard
+- Capture console errors
+- Capture failed network requests
+- Tampilkan report QA di dashboard
 
 ## Tech Stack
 
@@ -50,4 +56,4 @@ http://localhost:3000
 
 ## Status
 
-Masih tahap awal. Fokus sekarang adalah membangun fondasi dashboard dan QA runner sederhana sebelum masuk ke fitur agent atau AI report.
+Masih tahap awal. Fokus sekarang adalah menyelesaikan prototype QA-first: dashboard shell, fake run lifecycle, browser trail, summary, dan state dasar sebelum masuk ke real Playwright runner.
