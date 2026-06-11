@@ -9,6 +9,12 @@ export type CreateRunResponse = {
   createdAt: string;
   summary: string;
   trail: TrailStep[];
+  artifacts: {
+    desktopScreenshot: string;
+    mobileScreenshot: string;
+  };
+  consoleErrors: string[];
+  failedRequests: string[];
 };
 
 export type ApiErrorResponse = {

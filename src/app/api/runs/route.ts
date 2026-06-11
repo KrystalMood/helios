@@ -65,6 +65,33 @@ export async function POST(request: Request) {
       isMobile: true,
     });
 
+    const consoleErrors: string[] = [];
+    const failedRequests: string[] = [];
+
+    page.on("console", (msg) => {
+      if (msg.type() === "error") {
+        consoleErrors.push(`[Desktop] ${msg.text()}`);
+      }
+    });
+
+    page.on("requestfailed", (request) => {
+      failedRequests.push(
+        `[Desktop] ${request.url()} - ${request.failure()?.errorText ?? "Unknown failure"}`,
+      );
+    });
+
+    mobilePage.on("console", (msg) => {
+      if (msg.type() === "error") {
+        consoleErrors.push(`[Mobile] ${msg.text()}`);
+      }
+    });
+
+    mobilePage.on("requestfailed", (request) => {
+      failedRequests.push(
+        `[Mobile] ${request.url()} - ${request.failure()?.errorText ?? "Unknown failure"}`,
+      );
+    });
+
     const artifactDir = path.join(
       process.cwd(),
       "public",
@@ -114,12 +141,38 @@ export async function POST(request: Request) {
       trail: [
         {
           label: "Request received",
-          detail: "Helios accepted the submitted URL.",
+          detail: "Helios accepted and validated the submitted URL",
           timestamp: now.toISOString(),
         },
         {
-          label: "API route completed",
-          detail: "Placeholder QA response returned successfully.",
+          label: "Browser launched",
+          detail: "Playwright launched a Chromium browser instance.",
+          timestamp: now.toISOString(),
+        },
+        {
+          label: "Navigated to URL",
+          detail: `Desktop and mobile pages navigated to ${submittedUrl}.`,
+          timestamp: now.toISOString(),
+        },
+        {
+          label: "Page metadata captured",
+          detail: `Captured title and final URL: ${finalUrl}.`,
+          timestamp: now.toISOString(),
+        },
+        {
+          label: "Screenshots captured",
+          detail:
+            "Desktop and mobile screenshots were saved as local artifacts.",
+          timestamp: now.toISOString(),
+        },
+        {
+          label: "Console and network evidence collected",
+          detail: `${consoleErrors.length} console error(s), ${failedRequests.length} failed request(s) captured.`,
+          timestamp: now.toISOString(),
+        },
+        {
+          label: "Run completed",
+          detail: "Browser QA run completed successfully.",
           timestamp: now.toISOString(),
         },
       ],
@@ -127,6 +180,8 @@ export async function POST(request: Request) {
         desktopScreenshot: `/artifacts/runs/${runId}/desktop.png`,
         mobileScreenshot: `/artifacts/runs/${runId}/mobile.png`,
       },
+      consoleErrors,
+      failedRequests,
     });
   } catch (error) {
     return Response.json(

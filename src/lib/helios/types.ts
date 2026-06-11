@@ -27,6 +27,15 @@ export type LatestRun = {
   createdAt: string;
   finishedAt?: string;
   durationMs?: number;
+
+  finalUrl?: string;
+  title?: string;
+  artifacts?: {
+    desktopScreenshot: string;
+    mobileScreenshot: string;
+  };
+  consoleErrors?: string[];
+  failedRequests?: string[];
 };
 
 export type OverviewCardData = {
