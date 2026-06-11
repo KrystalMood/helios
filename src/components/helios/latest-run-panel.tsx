@@ -6,6 +6,7 @@ import type { LatestRun, OverviewCardData } from "@/lib/helios/types";
 import { RunChecksList } from "@/components/helios/run-checks-list";
 import { BrowserTrail } from "@/components/helios/browser-trail";
 import { RunMetadata } from "@/components/helios/run-metadata";
+import { RunEvidenceList } from "@/components/helios/run-evidence-list";
 
 type LatestRunPanelProps = {
   latestRun: LatestRun | null;
@@ -60,6 +61,12 @@ export function LatestRunPanel({ latestRun, onReset }: LatestRunPanelProps) {
           />
         ))}
       </div>
+      {latestRun ? (
+        <RunEvidenceList
+          consoleErrors={latestRun.consoleErrors}
+          failedRequests={latestRun.failedRequests}
+        />
+      ) : null}
 
       {latestRun ? <RunChecksList checks={latestRun.checks} /> : null}
       {latestRun ? <BrowserTrail trail={latestRun.trail} /> : null}

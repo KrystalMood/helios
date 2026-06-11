@@ -32,8 +32,8 @@ export function RunForm({ onSubmit, isDisabled = false }: RunFormProps) {
           </button>
         </div>
         <p className="mt-3 text-xs text-muted">
-          Currently simulates a single-page QA run. Real browser automation is
-          planned for the next milestone.
+          Runs a real single-page browser QA check with screenshots, console
+          errors, and failed network request evidence.
         </p>
       </form>
     </section>
