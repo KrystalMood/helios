@@ -1,11 +1,25 @@
-import { chromium, type Browser } from "playwright";
+import { chromium, type Browser, type Page } from "playwright";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
+
+const PAGE_GOTO_TIMEOUT_MS = 30_000;
+const PAGE_SETTLE_TIMEOUT_MS = 5_000;
 
 type RunSinglePageQAProps = {
   submittedUrl: string;
   runId: string;
 };
+
+async function waitForPageToSettle(page: Page) {
+  try {
+    await page.waitForLoadState("networkidle", {
+      timeout: PAGE_SETTLE_TIMEOUT_MS,
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export async function runSinglePageQA({
   submittedUrl,
@@ -70,14 +84,16 @@ export async function runSinglePageQA({
 
     await page.goto(submittedUrl, {
       waitUntil: "domcontentloaded",
+      timeout: PAGE_GOTO_TIMEOUT_MS,
     });
 
     await mobilePage.goto(submittedUrl, {
       waitUntil: "domcontentloaded",
+      timeout: PAGE_GOTO_TIMEOUT_MS,
     });
 
-    await page.waitForLoadState("networkidle");
-    await mobilePage.waitForLoadState("networkidle");
+    const desktopSettled = await waitForPageToSettle(page);
+    const mobileSettled = await waitForPageToSettle(mobilePage);
 
     const desktopScreenshotPath = path.join(artifactDir, "desktop.png");
     const mobileScreenshotPath = path.join(artifactDir, "mobile.png");
@@ -118,6 +134,14 @@ export async function runSinglePageQA({
         {
           label: "Navigated to URL",
           detail: `Desktop and mobile pages navigated to ${submittedUrl}.`,
+          timestamp: now.toISOString(),
+        },
+        {
+          label: "Page settle check completed",
+          detail:
+            desktopSettled && mobileSettled
+              ? "Desktop and mobile pages reached network idle."
+              : "At least one viewport did not reach network idle before the settle timeout; Helios continued with available evidence.",
           timestamp: now.toISOString(),
         },
         {

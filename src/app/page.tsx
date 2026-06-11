@@ -8,10 +8,10 @@ import { RunForm } from "@/components/helios/run-form";
 import { LatestRunPanel } from "@/components/helios/latest-run-panel";
 import { DashboardHero } from "@/components/helios/dashboard-hero";
 import {
-  FAKE_RUN_RUNNING_DELAY_MS,
-  createQueuedFakeRun,
-  markFakeRunRunning,
-} from "@/lib/helios/fake-run";
+  RUNNING_STATE_DELAY_MS,
+  createQueuedRunState,
+  markRunRunning,
+} from "@/lib/helios/run-state";
 import { createRun } from "@/lib/helios/api";
 import { createChecksFromRunResult } from "@/lib/helios/checks";
 
@@ -43,7 +43,7 @@ export default function Home() {
     const formData = new FormData(e.currentTarget);
     const url = formData.get("url")?.toString().trim() ?? "";
 
-    const { run, startTime } = createQueuedFakeRun(url);
+    const { run, startTime } = createQueuedRunState(url);
     const runId = run.id;
 
     setLatestRun(run);
@@ -51,9 +51,9 @@ export default function Home() {
     setTimeout(() => {
       setLatestRun((prev) => {
         if (!prev || prev.id !== runId) return prev;
-        return markFakeRunRunning(prev);
+        return markRunRunning(prev);
       });
-    }, FAKE_RUN_RUNNING_DELAY_MS);
+    }, RUNNING_STATE_DELAY_MS);
 
     try {
       const result = await createRun(url);

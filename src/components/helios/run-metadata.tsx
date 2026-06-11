@@ -1,6 +1,7 @@
 import type { LatestRun } from "@/lib/helios/types";
 import { formatTimestamp } from "@/lib/helios/format";
-import Image from "next/image";
+
+import { ArtifactViewer } from "@/components/helios/artifact-viewer";
 
 type RunMetadataProps = {
   run: LatestRun;
@@ -78,28 +79,9 @@ export function RunMetadata({ run }: RunMetadataProps) {
       )}
 
       {run.artifacts ? (
-        <div className="md:col-span-3 grid gap-3 md:grid-cols-2">
-          <div>
-            <p className="mb-2 text-sm text-muted">Desktop screenshot</p>
-            <Image
-              src={run.artifacts.desktopScreenshot}
-              alt="Desktop screenshot"
-              className="max-h-72 w-full rounded-md border border-border object-cover object-top"
-              width={720}
-              height={450}
-            />
-          </div>
-
-          <div>
-            <p className="mb-2 text-sm text-muted">Mobile screenshot</p>
-            <Image
-              src={run.artifacts.mobileScreenshot}
-              alt="Mobile screenshot"
-              className="max-h-72 w-full rounded-md border border-border object-cover object-top"
-              width={390}
-              height={844}
-            />
-          </div>
+        <div className="md:col-span-3">
+          <p className="mb-2 text-sm text-muted">Artifacts</p>
+          <ArtifactViewer artifacts={run.artifacts} />
         </div>
       ) : null}
     </div>
