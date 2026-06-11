@@ -23,10 +23,6 @@ export function ArtifactViewer({ artifacts }: ArtifactViewerProps) {
       ? artifacts.desktopScreenshot
       : artifacts.mobileScreenshot;
 
-  if (!screenshotUrl) {
-    return <p className="text-sm text-muted">No screenshot available.</p>;
-  }
-
   useEffect(() => {
     if (!isModalOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -35,6 +31,10 @@ export function ArtifactViewer({ artifacts }: ArtifactViewerProps) {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isModalOpen]);
+
+  if (!screenshotUrl) {
+    return <p className="text-sm text-muted">No screenshot available.</p>;
+  }
 
   return (
     <div>

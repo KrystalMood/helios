@@ -7,6 +7,7 @@ import { RunChecksList } from "@/components/helios/run-checks-list";
 import { BrowserTrail } from "@/components/helios/browser-trail";
 import { RunMetadata } from "@/components/helios/run-metadata";
 import { RunEvidenceList } from "@/components/helios/run-evidence-list";
+import { downloadRunJson } from "@/lib/helios/export";
 
 type LatestRunPanelProps = {
   latestRun: LatestRun | null;
@@ -19,6 +20,8 @@ export function LatestRunPanel({ latestRun, onReset }: LatestRunPanelProps) {
     if (latestRun.status === "Completed") return card.completedText;
     return card.activeText;
   };
+  const canExport =
+    latestRun?.status === "Completed" || latestRun?.status === "Failed";
 
   return (
     <section className="mt-6 rounded-lg border border-border bg-panel p-5">
@@ -27,12 +30,26 @@ export function LatestRunPanel({ latestRun, onReset }: LatestRunPanelProps) {
         <div className="flex items-center gap-2">
           <StatusBadge status={latestRun?.status ?? "Idle"} />
           {latestRun ? (
-            <button
-              onClick={onReset}
-              className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
-            >
-              Reset
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => {
+                  if (!canExport) return;
+                  downloadRunJson(latestRun);
+                }}
+                disabled={!canExport}
+                className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Export JSON
+              </button>
+              <button
+                type="button"
+                onClick={onReset}
+                className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
+              >
+                Reset
+              </button>
+            </>
           ) : null}
         </div>
       </header>
