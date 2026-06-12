@@ -16,6 +16,11 @@ export type CheckResult = {
   severity: CheckSeverity;
 };
 
+export type LoadMetrics = {
+  domContentLoadedMs: number;
+  loadEventMs: number;
+};
+
 export type LatestRun = {
   id: string;
   startingUrl: string;
@@ -38,6 +43,7 @@ export type LatestRun = {
   brokenImages?: string[];
   consoleErrors?: string[];
   failedRequests?: string[];
+  loadMetrics?: LoadMetrics;
 };
 
 export type OverviewCardData = {

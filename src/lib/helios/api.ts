@@ -1,4 +1,4 @@
-import type { TrailStep } from "@/lib/helios/types";
+import type { LoadMetrics, TrailStep } from "@/lib/helios/types";
 
 export type CreateRunResponse = {
   id: string;
@@ -19,6 +19,7 @@ export type CreateRunResponse = {
   brokenImages: string[];
   consoleErrors: string[];
   failedRequests: string[];
+  loadMetrics?: LoadMetrics;
 };
 
 export type ApiErrorResponse = {

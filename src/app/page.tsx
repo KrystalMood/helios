@@ -60,6 +60,7 @@ export default function Home() {
           createdAt: result.createdAt,
           finishedAt: result.finishedAt,
           durationMs: result.durationMs,
+          loadMetrics: result.loadMetrics,
           trail: [
             ...result.trail,
             {

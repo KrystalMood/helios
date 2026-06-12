@@ -1,5 +1,5 @@
 import type { LatestRun } from "@/lib/helios/types";
-import { formatTimestamp } from "@/lib/helios/format";
+import { formatTimestamp, formatDurationMs } from "@/lib/helios/format";
 
 import { ArtifactViewer } from "@/components/helios/artifact-viewer";
 
@@ -61,9 +61,29 @@ export function RunMetadata({ run }: RunMetadataProps) {
         <div>
           <p className="text-sm text-muted">Duration</p>
           <p className="text-foreground break-all">
-            {(run.durationMs / 1000).toFixed(2)} s
+            {formatDurationMs(run.durationMs)}
           </p>
         </div>
+      ) : null}
+
+      {run.loadMetrics ? (
+        <>
+          <div>
+            <p className="text-sm text-muted">DOM loaded</p>
+            <p className="text-foreground break-all">
+              {formatDurationMs(run.loadMetrics.domContentLoadedMs)}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-sm text-muted">Load event</p>
+            <p className="text-foreground break-all">
+              {run.loadMetrics.loadEventMs > 0
+                ? formatDurationMs(run.loadMetrics.loadEventMs)
+                : "Not observed"}
+            </p>
+          </div>
+        </>
       ) : null}
 
       <div className="md:col-span-3">

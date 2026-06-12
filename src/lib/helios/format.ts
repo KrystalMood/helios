@@ -11,3 +11,7 @@ export function formatLabel(value: string) {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
+
+export function formatDurationMs(durationMs: number) {
+  return `${(durationMs / 1000).toFixed(2)} s`;
+}

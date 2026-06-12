@@ -119,6 +119,19 @@ export async function runSinglePageQA({
       return undefined;
     });
 
+    const loadMetrics = await page.evaluate(() => {
+      const navigation = performance.getEntriesByType("navigation")[0] as
+        | PerformanceNavigationTiming
+        | undefined;
+
+      if (!navigation) return undefined;
+
+      return {
+        domContentLoadedMs: Math.round(navigation.domContentLoadedEventEnd),
+        loadEventMs: Math.round(navigation.loadEventEnd),
+      };
+    });
+
     const brokenImages = await page.evaluate(() => {
       return Array.from(document.images)
         .filter((image) => !image.complete || image.naturalWidth === 0)
@@ -143,12 +156,13 @@ export async function runSinglePageQA({
       id: runId,
       startingUrl: submittedUrl,
       finalUrl,
-      status: "completed",
+      status: "Completed",
       title,
       description: description ?? undefined,
       createdAt: startedAt.toISOString(),
       finishedAt: finishedAt.toISOString(),
       durationMs,
+      loadMetrics,
       summary:
         "Helios opened the submitted URL with Playwright and captured basic page metadata.",
       trail: [

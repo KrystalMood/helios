@@ -1,5 +1,6 @@
 import type { CheckResult } from "@/lib/helios/types";
 import type { CreateRunResponse } from "@/lib/helios/api";
+import { formatDurationMs } from "@/lib/helios/format";
 
 export function createChecksFromRunResult(
   result: CreateRunResponse,
@@ -13,6 +14,14 @@ export function createChecksFromRunResult(
       detail: `Playwright loaded the page and resolved to ${result.finalUrl}.`,
       status: "passed",
       severity: "info",
+    },
+    {
+      title: "Page load metrics captured",
+      detail: result.loadMetrics
+        ? `DOM loaded in ${formatDurationMs(result.loadMetrics.domContentLoadedMs)}.`
+        : "Page load metrics were not available.",
+      status: result.loadMetrics ? "passed" : "warning",
+      severity: result.loadMetrics ? "info" : "low",
     },
     {
       title: "Page title checked",
