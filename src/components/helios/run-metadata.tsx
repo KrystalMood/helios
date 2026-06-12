@@ -41,6 +41,13 @@ export function RunMetadata({ run }: RunMetadataProps) {
         </div>
       ) : null}
 
+      {run.description ? (
+        <div className="md:col-span-3">
+          <p className="text-sm text-muted">Meta description</p>
+          <p className="text-foreground break-all">{run.description}</p>
+        </div>
+      ) : null}
+
       {run.finishedAt ? (
         <div>
           <p className="text-sm text-muted">Finished at</p>

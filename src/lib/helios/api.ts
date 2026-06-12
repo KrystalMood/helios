@@ -6,6 +6,7 @@ export type CreateRunResponse = {
   finalUrl: string;
   status: "completed";
   title: string;
+  description?: string;
   createdAt: string;
   summary: string;
   trail: TrailStep[];

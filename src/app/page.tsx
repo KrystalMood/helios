@@ -70,6 +70,7 @@ export default function Home() {
           ...prev,
           finalUrl: result.finalUrl,
           title: result.title,
+          description: result.description,
           summary: result.summary,
           checks,
           artifacts: result.artifacts,

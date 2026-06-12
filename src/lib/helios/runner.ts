@@ -101,6 +101,24 @@ export async function runSinglePageQA({
     const title = await page.title();
     const finalUrl = page.url();
 
+    const description = await page.evaluate(() => {
+      const selectors = [
+        'meta[name="description"]',
+        'meta[property="og:description"]',
+        'meta[name="twitter:description"]',
+      ];
+
+      for (const selector of selectors) {
+        const content = document
+          .querySelector(selector)
+          ?.getAttribute("content")
+          ?.trim();
+
+        if (content) return content;
+      }
+      return undefined;
+    });
+
     await page.screenshot({
       path: desktopScreenshotPath,
       fullPage: true,
@@ -117,6 +135,7 @@ export async function runSinglePageQA({
       finalUrl,
       status: "completed",
       title,
+      description: description ?? undefined,
       createdAt: now.toISOString(),
       summary:
         "Helios opened the submitted URL with Playwright and captured basic page metadata.",

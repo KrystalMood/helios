@@ -4,12 +4,31 @@ import type { CreateRunResponse } from "@/lib/helios/api";
 export function createChecksFromRunResult(
   result: CreateRunResponse,
 ): CheckResult[] {
+  const hasDescription =
+    result.description !== undefined && result.description.trim().length > 0;
   return [
     {
       title: "Page loaded successfully",
       detail: `Playwright loaded the page and resolved to ${result.finalUrl}.`,
       status: "passed",
       severity: "info",
+    },
+    {
+      title: "Page title checked",
+      detail:
+        result.title.trim().length > 0
+          ? `Page title captured: ${result.title}.`
+          : "No page title was captured.",
+      status: result.title.trim().length > 0 ? "passed" : "warning",
+      severity: result.title.trim().length > 0 ? "info" : "low",
+    },
+    {
+      title: "Meta description checked",
+      detail: hasDescription
+        ? "Meta description was captured."
+        : "No meta description was captured.",
+      status: hasDescription ? "passed" : "warning",
+      severity: hasDescription ? "info" : "low",
     },
     {
       title: "Desktop screenshot captured",

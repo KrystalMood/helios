@@ -30,6 +30,7 @@ export type LatestRun = {
 
   finalUrl?: string;
   title?: string;
+  description?: string;
   artifacts?: {
     desktopScreenshot: string;
     mobileScreenshot: string;
