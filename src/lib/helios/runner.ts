@@ -25,7 +25,7 @@ export async function runSinglePageQA({
   submittedUrl,
   runId,
 }: RunSinglePageQAProps) {
-  const now = new Date();
+  const startedAt = new Date();
 
   let browser: Browser | undefined;
   try {
@@ -136,6 +136,9 @@ export async function runSinglePageQA({
       fullPage: true,
     });
 
+    const finishedAt = new Date();
+    const durationMs = finishedAt.getTime() - startedAt.getTime();
+
     return {
       id: runId,
       startingUrl: submittedUrl,
@@ -143,24 +146,26 @@ export async function runSinglePageQA({
       status: "completed",
       title,
       description: description ?? undefined,
-      createdAt: now.toISOString(),
+      createdAt: startedAt.toISOString(),
+      finishedAt: finishedAt.toISOString(),
+      durationMs,
       summary:
         "Helios opened the submitted URL with Playwright and captured basic page metadata.",
       trail: [
         {
           label: "Request received",
           detail: "Helios accepted and validated the submitted URL",
-          timestamp: now.toISOString(),
+          timestamp: startedAt.toISOString(),
         },
         {
           label: "Browser launched",
           detail: "Playwright launched a Chromium browser instance.",
-          timestamp: now.toISOString(),
+          timestamp: startedAt.toISOString(),
         },
         {
           label: "Navigated to URL",
           detail: `Desktop and mobile pages navigated to ${submittedUrl}.`,
-          timestamp: now.toISOString(),
+          timestamp: startedAt.toISOString(),
         },
         {
           label: "Page settle check completed",
@@ -168,28 +173,28 @@ export async function runSinglePageQA({
             desktopSettled && mobileSettled
               ? "Desktop and mobile pages reached network idle."
               : "At least one viewport did not reach network idle before the settle timeout; Helios continued with available evidence.",
-          timestamp: now.toISOString(),
+          timestamp: startedAt.toISOString(),
         },
         {
           label: "Page metadata captured",
           detail: `Captured title and final URL: ${finalUrl}.`,
-          timestamp: now.toISOString(),
+          timestamp: startedAt.toISOString(),
         },
         {
           label: "Screenshots captured",
           detail:
             "Desktop and mobile screenshots were saved as local artifacts.",
-          timestamp: now.toISOString(),
+          timestamp: startedAt.toISOString(),
         },
         {
           label: "Console and network evidence collected",
           detail: `${consoleErrors.length} console error(s), ${failedRequests.length} failed request(s) captured.`,
-          timestamp: now.toISOString(),
+          timestamp: startedAt.toISOString(),
         },
         {
           label: "Run completed",
           detail: "Browser QA run completed successfully.",
-          timestamp: now.toISOString(),
+          timestamp: finishedAt.toISOString(),
         },
       ],
       artifacts: {

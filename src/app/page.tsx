@@ -43,7 +43,7 @@ export default function Home() {
     const formData = new FormData(e.currentTarget);
     const url = formData.get("url")?.toString().trim() ?? "";
 
-    const { run, startTime } = createQueuedRunState(url);
+    const { run } = createQueuedRunState(url);
     const runId = run.id;
 
     setLatestRun(run);
@@ -59,9 +59,6 @@ export default function Home() {
       const result = await createRun(url);
       console.log(result);
 
-      const finishedAt = new Date();
-      const durationMs = finishedAt.getTime() - startTime;
-
       const checks = createChecksFromRunResult(result);
 
       setLatestRun((prev) => {
@@ -74,14 +71,15 @@ export default function Home() {
           summary: result.summary,
           checks,
           status: "Completed",
-          finishedAt: finishedAt.toISOString(),
-          durationMs,
+          createdAt: result.createdAt,
+          finishedAt: result.finishedAt,
+          durationMs: result.durationMs,
           trail: [
             ...result.trail,
             {
               label: "Dashboard updated",
               detail: "Helios displayed the completed browser QA result.",
-              timestamp: finishedAt.toISOString(),
+              timestamp: result.finishedAt,
             },
           ],
           artifacts: result.artifacts,

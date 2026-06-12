@@ -8,6 +8,8 @@ export type CreateRunResponse = {
   title: string;
   description?: string;
   createdAt: string;
+  finishedAt: string;
+  durationMs: number;
   summary: string;
   trail: TrailStep[];
   artifacts: {
