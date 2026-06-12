@@ -80,6 +80,7 @@ export function LatestRunPanel({ latestRun, onReset }: LatestRunPanelProps) {
       </div>
       {latestRun ? (
         <RunEvidenceList
+          brokenImages={latestRun.brokenImages}
           consoleErrors={latestRun.consoleErrors}
           failedRequests={latestRun.failedRequests}
         />

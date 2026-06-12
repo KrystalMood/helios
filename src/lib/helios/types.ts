@@ -35,6 +35,7 @@ export type LatestRun = {
     desktopScreenshot: string;
     mobileScreenshot: string;
   };
+  brokenImages?: string[];
   consoleErrors?: string[];
   failedRequests?: string[];
 };

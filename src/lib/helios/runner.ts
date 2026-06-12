@@ -119,6 +119,13 @@ export async function runSinglePageQA({
       return undefined;
     });
 
+    const brokenImages = await page.evaluate(() => {
+      return Array.from(document.images)
+        .filter((image) => !image.complete || image.naturalWidth === 0)
+        .map((image) => image.currentSrc || image.src)
+        .filter(Boolean);
+    });
+
     await page.screenshot({
       path: desktopScreenshotPath,
       fullPage: true,
@@ -189,6 +196,7 @@ export async function runSinglePageQA({
         desktopScreenshot: `/artifacts/runs/${runId}/desktop.png`,
         mobileScreenshot: `/artifacts/runs/${runId}/mobile.png`,
       },
+      brokenImages,
       consoleErrors,
       failedRequests,
     };

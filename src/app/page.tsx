@@ -73,9 +73,6 @@ export default function Home() {
           description: result.description,
           summary: result.summary,
           checks,
-          artifacts: result.artifacts,
-          consoleErrors: result.consoleErrors,
-          failedRequests: result.failedRequests,
           status: "Completed",
           finishedAt: finishedAt.toISOString(),
           durationMs,
@@ -87,6 +84,10 @@ export default function Home() {
               timestamp: finishedAt.toISOString(),
             },
           ],
+          artifacts: result.artifacts,
+          brokenImages: result.brokenImages,
+          consoleErrors: result.consoleErrors,
+          failedRequests: result.failedRequests,
         };
       });
     } catch (error) {

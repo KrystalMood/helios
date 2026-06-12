@@ -6,6 +6,7 @@ export function createChecksFromRunResult(
 ): CheckResult[] {
   const hasDescription =
     result.description !== undefined && result.description.trim().length > 0;
+  const hasBrokenImages = result.brokenImages.length > 0;
   return [
     {
       title: "Page loaded successfully",
@@ -43,6 +44,14 @@ export function createChecksFromRunResult(
         "A mobile viewport screenshot was captured from the real browser run.",
       status: "passed",
       severity: "info",
+    },
+    {
+      title: "Broken images checked",
+      detail: hasBrokenImages
+        ? `${result.brokenImages.length} broken image(s) found.`
+        : "No broken images were found.",
+      status: hasBrokenImages ? "warning" : "passed",
+      severity: hasBrokenImages ? "medium" : "info",
     },
     {
       title: "Console errors checked",
