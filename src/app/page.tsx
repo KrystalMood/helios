@@ -14,7 +14,10 @@ import {
   markRunRunning,
 } from "@/lib/helios/run-state";
 import { createRun } from "@/lib/helios/api";
-import { createChecksFromRunResult } from "@/lib/helios/checks";
+import {
+  createCompletedRunState,
+  createFailedRunState,
+} from "@/lib/helios/run-transformer";
 
 export default function Home() {
   const [latestRun, setLatestRun] = useState<LatestRun | null>(null);
@@ -43,67 +46,20 @@ export default function Home() {
 
     try {
       const result = await createRun(url);
-      console.log(result);
-
-      const checks = createChecksFromRunResult(result);
 
       setLatestRun((prev) => {
         if (!prev || prev.id !== runId) return prev;
-        return {
-          ...prev,
-          finalUrl: result.finalUrl,
-          title: result.title,
-          description: result.description,
-          summary: result.summary,
-          checks,
-          status: "Completed",
-          createdAt: result.createdAt,
-          finishedAt: result.finishedAt,
-          durationMs: result.durationMs,
-          loadMetrics: result.loadMetrics,
-          trail: [
-            ...result.trail,
-            {
-              label: "Dashboard updated",
-              detail: "Helios displayed the completed browser QA result.",
-              timestamp: result.finishedAt,
-            },
-          ],
-          artifacts: result.artifacts,
-          brokenImages: result.brokenImages,
-          consoleErrors: result.consoleErrors,
-          failedRequests: result.failedRequests,
-        };
+        return createCompletedRunState(prev, result);
       });
     } catch (error) {
       console.error("Failed to call run API", error);
+
       const message = getRunErrorMessage(error);
       setRunError(message);
       setLatestRun((prev) => {
         if (!prev || prev.id !== runId) return prev;
 
-        return {
-          ...prev,
-          status: "Failed",
-          summary: "Helios could not complete the browser QA run.",
-          finishedAt: new Date().toISOString(),
-          checks: [
-            {
-              title: "Browser run failed",
-              detail: message,
-              status: "failed",
-              severity: "high",
-            },
-          ],
-          trail: [
-            ...prev.trail,
-            {
-              label: "Run failed",
-              detail: message,
-              timestamp: new Date().toISOString(),
-            },
-          ],
-        };
+        return createFailedRunState(prev, message);
       });
     }
   };
