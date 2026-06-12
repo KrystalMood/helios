@@ -1,8 +1,11 @@
 import { StatusBadge } from "@/components/helios/status-badge";
 import { OverviewCard } from "@/components/helios/overview-card";
-import { overviewCards } from "@/lib/helios/overview-cards";
+import {
+  getOverviewCardDescription,
+  getOverviewCards,
+} from "@/lib/helios/overview-cards";
 
-import type { LatestRun, OverviewCardData } from "@/lib/helios/types";
+import type { LatestRun } from "@/lib/helios/types";
 import { RunChecksList } from "@/components/helios/run-checks-list";
 import { BrowserTrail } from "@/components/helios/browser-trail";
 import { RunMetadata } from "@/components/helios/run-metadata";
@@ -15,11 +18,7 @@ type LatestRunPanelProps = {
 };
 
 export function LatestRunPanel({ latestRun, onReset }: LatestRunPanelProps) {
-  const getCardDescription = (card: OverviewCardData) => {
-    if (!latestRun) return card.emptyText;
-    if (latestRun.status === "Completed") return card.completedText;
-    return card.activeText;
-  };
+  const overviewCards = getOverviewCards(latestRun);
   const canExport =
     latestRun?.status === "Completed" || latestRun?.status === "Failed";
 
@@ -74,7 +73,7 @@ export function LatestRunPanel({ latestRun, onReset }: LatestRunPanelProps) {
           <OverviewCard
             key={card.title}
             title={card.title}
-            description={getCardDescription(card)}
+            description={getOverviewCardDescription(latestRun, card)}
           />
         ))}
       </div>
