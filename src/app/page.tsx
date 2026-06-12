@@ -2,6 +2,7 @@
 import { useState } from "react";
 
 import type { LatestRun } from "@/lib/helios/types";
+import { getRunErrorMessage } from "@/lib/helios/errors";
 
 import { AppHeader } from "@/components/helios/app-header";
 import { RunForm } from "@/components/helios/run-form";
@@ -14,21 +15,6 @@ import {
 } from "@/lib/helios/run-state";
 import { createRun } from "@/lib/helios/api";
 import { createChecksFromRunResult } from "@/lib/helios/checks";
-
-function getRunErrorMessage(error: unknown) {
-  if (error instanceof Error) return error.message;
-
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "message" in error &&
-    typeof error.message === "string"
-  ) {
-    return error.message;
-  }
-
-  return "Helios could not complete the browser QA run.";
-}
 
 export default function Home() {
   const [latestRun, setLatestRun] = useState<LatestRun | null>(null);

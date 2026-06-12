@@ -1,4 +1,4 @@
-import { runSinglePageQA } from "@/lib/helios/runner";
+import { runSinglePageQA } from "@/lib/helios/server/runner";
 
 type CreateRunRequest = {
   url?: string;

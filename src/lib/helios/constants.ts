@@ -1,0 +1,1 @@
+export const MAX_VISIBLE_EVIDENCE_ITEMS = 5;

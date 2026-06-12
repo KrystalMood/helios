@@ -1,3 +1,5 @@
+import { MAX_VISIBLE_EVIDENCE_ITEMS } from "@/lib/helios/constants";
+
 type RunEvidenceListProps = {
   brokenImages?: string[];
   consoleErrors?: string[];
@@ -9,9 +11,12 @@ export function RunEvidenceList({
   consoleErrors,
   failedRequests,
 }: RunEvidenceListProps) {
-  const visibleBrokenImages = brokenImages?.slice(0, 5) ?? [];
-  const visibleConsoleErrors = consoleErrors?.slice(0, 5) ?? [];
-  const visibleFailedRequests = failedRequests?.slice(0, 5) ?? [];
+  const visibleBrokenImages =
+    brokenImages?.slice(0, MAX_VISIBLE_EVIDENCE_ITEMS) ?? [];
+  const visibleConsoleErrors =
+    consoleErrors?.slice(0, MAX_VISIBLE_EVIDENCE_ITEMS) ?? [];
+  const visibleFailedRequests =
+    failedRequests?.slice(0, MAX_VISIBLE_EVIDENCE_ITEMS) ?? [];
 
   const brokenImagesCount = brokenImages?.length ?? 0;
   const consoleErrorCount = consoleErrors?.length ?? 0;
