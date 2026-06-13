@@ -19,13 +19,16 @@ Untuk tahap awal, Helios belum fokus ke AI. Core pertamanya adalah dashboard dan
 ## MVP
 
 - Input target URL
-- Fake QA run lifecycle: queued, running, completed
+- QA run lifecycle: queued, running, completed, failed
 - Browser trail/timeline
 - Basic QA summary
 - Screenshot desktop dan mobile
 - Capture console errors
 - Capture failed network requests
+- Capture broken images dan page load metrics
 - Tampilkan report QA di dashboard
+- Preview artifacts dan export run result sebagai JSON
+- Recent runs in-memory untuk inspeksi cepat selama sesi
 
 ## Tech Stack
 
@@ -33,6 +36,19 @@ Untuk tahap awal, Helios belum fokus ke AI. Core pertamanya adalah dashboard dan
 - TypeScript
 - Tailwind CSS
 - Playwright
+
+## Project Structure
+
+```txt
+src/lib/helios/
+  client/   Browser/client-side run state, API calls, export, and transforms
+  server/   Playwright runner used by the API route
+  shared/   Types, checks, validators, formatting, constants, and shared helpers
+
+src/components/helios/
+  Dashboard UI components for forms, run metadata, artifacts, evidence,
+  checks, browser trail, status badges, and recent runs.
+```
 
 ## Development
 
@@ -56,4 +72,4 @@ http://localhost:3000
 
 ## Status
 
-Masih tahap awal. Fokus sekarang adalah menyelesaikan prototype QA-first: dashboard shell, fake run lifecycle, browser trail, summary, dan state dasar sebelum masuk ke real Playwright runner.
+Prototype QA-first sudah memakai real Playwright runner untuk single-page checks. Fokus berikutnya adalah memoles page load metrics, better error handling, richer evidence, dan persiapan persistence sebelum masuk ke database-backed run history.

@@ -56,8 +56,8 @@ export function createFailedRunState(
     trail: [
       ...currentRun.trail,
       {
-        label: "Run failed",
-        detail: message,
+        label: "Browser run failed",
+        detail: `Helios stopped the QA run: ${message}`,
         timestamp: failedAt,
       },
     ],

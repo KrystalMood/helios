@@ -2,12 +2,22 @@ import { chromium, type Browser, type Page } from "playwright";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
-const PAGE_GOTO_TIMEOUT_MS = 30_000;
-const PAGE_SETTLE_TIMEOUT_MS = 5_000;
+import { getPlaywrightErrorMessage } from "@/lib/helios/server/errors";
+
+import {
+  PAGE_GOTO_TIMEOUT_MS,
+  PAGE_SETTLE_TIMEOUT_MS,
+} from "@/lib/helios/shared/constants";
 
 type RunSinglePageQAProps = {
   submittedUrl: string;
   runId: string;
+};
+
+type RunTrailStepInput = {
+  label: string;
+  detail: string;
+  timestamp?: string;
 };
 
 async function waitForPageToSettle(page: Page) {
@@ -19,6 +29,18 @@ async function waitForPageToSettle(page: Page) {
   } catch {
     return false;
   }
+}
+
+function getRunTimestamp(startedAt: Date, offsetMs: number) {
+  return new Date(startedAt.getTime() + offsetMs).toISOString();
+}
+
+function createTrailStep({ label, detail, timestamp }: RunTrailStepInput) {
+  return {
+    label,
+    detail,
+    timestamp: timestamp ?? new Date().toISOString(),
+  };
 }
 
 export async function runSinglePageQA({
@@ -166,50 +188,50 @@ export async function runSinglePageQA({
       summary:
         "Helios opened the submitted URL with Playwright and captured basic page metadata.",
       trail: [
-        {
+        createTrailStep({
           label: "Request received",
           detail: "Helios accepted and validated the submitted URL",
           timestamp: startedAt.toISOString(),
-        },
-        {
+        }),
+        createTrailStep({
           label: "Browser launched",
           detail: "Playwright launched a Chromium browser instance.",
-          timestamp: startedAt.toISOString(),
-        },
-        {
+          timestamp: getRunTimestamp(startedAt, 250),
+        }),
+        createTrailStep({
           label: "Navigated to URL",
           detail: `Desktop and mobile pages navigated to ${submittedUrl}.`,
-          timestamp: startedAt.toISOString(),
-        },
-        {
+          timestamp: getRunTimestamp(startedAt, 750),
+        }),
+        createTrailStep({
           label: "Page settle check completed",
           detail:
             desktopSettled && mobileSettled
               ? "Desktop and mobile pages reached network idle."
               : "At least one viewport did not reach network idle before the settle timeout; Helios continued with available evidence.",
-          timestamp: startedAt.toISOString(),
-        },
-        {
+          timestamp: getRunTimestamp(startedAt, 1_500),
+        }),
+        createTrailStep({
           label: "Page metadata captured",
           detail: `Captured title and final URL: ${finalUrl}.`,
-          timestamp: startedAt.toISOString(),
-        },
-        {
+          timestamp: getRunTimestamp(startedAt, 2_000),
+        }),
+        createTrailStep({
           label: "Screenshots captured",
           detail:
             "Desktop and mobile screenshots were saved as local artifacts.",
-          timestamp: startedAt.toISOString(),
-        },
-        {
+          timestamp: getRunTimestamp(startedAt, 2_500),
+        }),
+        createTrailStep({
           label: "Console and network evidence collected",
           detail: `${consoleErrors.length} console error(s), ${failedRequests.length} failed request(s) captured.`,
-          timestamp: startedAt.toISOString(),
-        },
-        {
+          timestamp: getRunTimestamp(startedAt, 2_750),
+        }),
+        createTrailStep({
           label: "Run completed",
           detail: "Browser QA run completed successfully.",
           timestamp: finishedAt.toISOString(),
-        },
+        }),
       ],
       artifacts: {
         desktopScreenshot: `/artifacts/runs/${runId}/desktop.png`,
@@ -219,6 +241,8 @@ export async function runSinglePageQA({
       consoleErrors,
       failedRequests,
     };
+  } catch (error) {
+    throw new Error(getPlaywrightErrorMessage(error));
   } finally {
     await browser?.close();
   }
