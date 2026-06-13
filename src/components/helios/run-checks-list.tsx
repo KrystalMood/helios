@@ -1,5 +1,5 @@
-import type { CheckResult, CheckStatus } from "@/lib/helios/types";
-import { formatLabel } from "@/lib/helios/format";
+import type { CheckResult, CheckStatus } from "@/lib/helios/shared/types";
+import { formatLabel } from "@/lib/helios/shared/format";
 
 type RunChecksListProps = {
   checks: CheckResult[];

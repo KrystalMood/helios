@@ -3,14 +3,14 @@ import { OverviewCard } from "@/components/helios/overview-card";
 import {
   getOverviewCardDescription,
   getOverviewCards,
-} from "@/lib/helios/overview-cards";
+} from "@/lib/helios/shared/overview-cards";
 
-import type { LatestRun } from "@/lib/helios/types";
+import type { LatestRun } from "@/lib/helios/shared/types";
 import { RunChecksList } from "@/components/helios/run-checks-list";
 import { BrowserTrail } from "@/components/helios/browser-trail";
 import { RunMetadata } from "@/components/helios/run-metadata";
 import { RunEvidenceList } from "@/components/helios/run-evidence-list";
-import { downloadRunJson } from "@/lib/helios/export";
+import { downloadRunJson } from "@/lib/helios/client/export";
 
 type LatestRunPanelProps = {
   latestRun: LatestRun | null;

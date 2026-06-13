@@ -1,6 +1,5 @@
-import type { LatestRun } from "@/lib/helios/types";
-
-const MAX_RECENT_RUNS = 5;
+import type { LatestRun } from "@/lib/helios/shared/types";
+import { MAX_RECENT_RUNS } from "@/lib/helios/shared/constants";
 
 export function addRecentRun(
   currentRuns: LatestRun[],

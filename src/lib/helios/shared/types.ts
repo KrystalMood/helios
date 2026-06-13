@@ -46,6 +46,28 @@ export type LatestRun = {
   loadMetrics?: LoadMetrics;
 };
 
+export type CreateRunResponse = {
+  id: string;
+  startingUrl: string;
+  finalUrl: string;
+  status: "completed";
+  title: string;
+  description?: string;
+  createdAt: string;
+  finishedAt: string;
+  durationMs: number;
+  summary: string;
+  trail: TrailStep[];
+  artifacts: {
+    desktopScreenshot: string;
+    mobileScreenshot: string;
+  };
+  brokenImages: string[];
+  consoleErrors: string[];
+  failedRequests: string[];
+  loadMetrics?: LoadMetrics;
+};
+
 export type OverviewCardData = {
   title: string;
   emptyText: string;

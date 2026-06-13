@@ -1,4 +1,4 @@
-import type { LatestRun, OverviewCardData } from "@/lib/helios/types";
+import type { LatestRun, OverviewCardData } from "@/lib/helios/shared/types";
 
 function getEvidenceCount(run: LatestRun) {
   return (

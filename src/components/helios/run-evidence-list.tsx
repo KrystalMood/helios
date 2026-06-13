@@ -1,4 +1,4 @@
-import { MAX_VISIBLE_EVIDENCE_ITEMS } from "@/lib/helios/constants";
+import { MAX_VISIBLE_EVIDENCE_ITEMS } from "@/lib/helios/shared/constants";
 
 type RunEvidenceListProps = {
   brokenImages?: string[];

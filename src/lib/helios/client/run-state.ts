@@ -1,4 +1,4 @@
-import type { LatestRun } from "@/lib/helios/types";
+import type { LatestRun } from "@/lib/helios/shared/types";
 
 export const RUNNING_STATE_DELAY_MS = 1000;
 

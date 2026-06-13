@@ -1,5 +1,5 @@
-import type { TrailStep } from "@/lib/helios/types";
-import { formatTimestamp } from "@/lib/helios/format";
+import type { TrailStep } from "@/lib/helios/shared/types";
+import { formatTimestamp } from "@/lib/helios/shared/format";
 
 type BrowserTrailProps = {
   trail: TrailStep[];

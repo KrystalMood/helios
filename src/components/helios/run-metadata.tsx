@@ -1,5 +1,5 @@
-import type { LatestRun } from "@/lib/helios/types";
-import { formatTimestamp, formatDurationMs } from "@/lib/helios/format";
+import type { LatestRun } from "@/lib/helios/shared/types";
+import { formatTimestamp, formatDurationMs } from "@/lib/helios/shared/format";
 
 import { ArtifactViewer } from "@/components/helios/artifact-viewer";
 

@@ -1,5 +1,5 @@
-import type { LatestRun } from "@/lib/helios/types";
-import { formatDurationMs, formatTimestamp } from "@/lib/helios/format";
+import type { LatestRun } from "@/lib/helios/shared/types";
+import { formatDurationMs, formatTimestamp } from "@/lib/helios/shared/format";
 import { StatusBadge } from "@/components/helios/status-badge";
 
 type RecentRunsListProps = {

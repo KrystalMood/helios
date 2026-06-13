@@ -1,6 +1,5 @@
-import type { CheckResult } from "@/lib/helios/types";
-import type { CreateRunResponse } from "@/lib/helios/api";
-import { formatDurationMs } from "@/lib/helios/format";
+import type { CheckResult, CreateRunResponse } from "@/lib/helios/shared/types";
+import { formatDurationMs } from "@/lib/helios/shared/format";
 
 export function createChecksFromRunResult(
   result: CreateRunResponse,

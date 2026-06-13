@@ -1,4 +1,4 @@
-import type { RunStatus } from "@/lib/helios/types";
+import type { RunStatus } from "@/lib/helios/shared/types";
 
 const statusBadgeClasses: Record<RunStatus, string> = {
   Idle: "border-border text-muted",

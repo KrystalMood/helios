@@ -1,19 +1,19 @@
 "use client";
 import { useState } from "react";
-import type { LatestRun } from "@/lib/helios/types";
-import { getRunErrorMessage } from "@/lib/helios/errors";
+import type { LatestRun } from "@/lib/helios/shared/types";
+import { getRunErrorMessage } from "@/lib/helios/shared/errors";
 import {
   RUNNING_STATE_DELAY_MS,
   createQueuedRunState,
   markRunRunning,
-} from "@/lib/helios/run-state";
-import { createRun } from "@/lib/helios/api";
+} from "@/lib/helios/client/run-state";
+import { createRun } from "@/lib/helios/client/api";
 import {
   createCompletedRunState,
   createFailedRunState,
-} from "@/lib/helios/run-transformer";
-import { isValidHttpUrl } from "@/lib/helios/validators";
-import { addRecentRun } from "@/lib/helios/recent-runs";
+} from "@/lib/helios/client/run-transformer";
+import { isValidHttpUrl } from "@/lib/helios/shared/validators";
+import { addRecentRun } from "@/lib/helios/client/recent-runs";
 
 import { AppHeader } from "@/components/helios/app-header";
 import { RunForm } from "@/components/helios/run-form";

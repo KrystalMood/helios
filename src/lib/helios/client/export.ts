@@ -1,4 +1,4 @@
-import type { LatestRun } from "@/lib/helios/types";
+import type { LatestRun } from "@/lib/helios/shared/types";
 
 export function downloadRunJson(run: LatestRun) {
   const json = JSON.stringify(run, null, 2);

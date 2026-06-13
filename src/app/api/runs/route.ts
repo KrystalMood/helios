@@ -1,5 +1,5 @@
 import { runSinglePageQA } from "@/lib/helios/server/runner";
-import { isValidHttpUrl } from "@/lib/helios/validators";
+import { isValidHttpUrl } from "@/lib/helios/shared/validators";
 
 type CreateRunRequest = {
   url?: string;

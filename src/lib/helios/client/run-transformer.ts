@@ -1,6 +1,5 @@
-import type { CreateRunResponse } from "@/lib/helios/api";
-import { createChecksFromRunResult } from "@/lib/helios/checks";
-import type { LatestRun } from "@/lib/helios/types";
+import { createChecksFromRunResult } from "@/lib/helios/shared/checks";
+import type { CreateRunResponse, LatestRun } from "@/lib/helios/shared/types";
 
 export function createCompletedRunState(
   currentRun: LatestRun,
