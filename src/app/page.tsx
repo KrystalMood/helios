@@ -7,6 +7,7 @@ import { getRunErrorMessage } from "@/lib/helios/errors";
 import { AppHeader } from "@/components/helios/app-header";
 import { RunForm } from "@/components/helios/run-form";
 import { LatestRunPanel } from "@/components/helios/latest-run-panel";
+import { RecentRunsList } from "@/components/helios/recent-runs-list";
 import { DashboardHero } from "@/components/helios/dashboard-hero";
 import {
   RUNNING_STATE_DELAY_MS,
@@ -22,6 +23,8 @@ import {
 export default function Home() {
   const [latestRun, setLatestRun] = useState<LatestRun | null>(null);
   const [runError, setRunError] = useState<string | undefined>();
+  const [recentRuns, setRecentRuns] = useState<LatestRun[]>([]);
+
   const isRunActive =
     latestRun?.status === "Queued" || latestRun?.status === "Running";
 
@@ -49,7 +52,16 @@ export default function Home() {
 
       setLatestRun((prev) => {
         if (!prev || prev.id !== runId) return prev;
-        return createCompletedRunState(prev, result);
+        const completedRun = createCompletedRunState(prev, result);
+
+        setRecentRuns((currentRuns) =>
+          [
+            completedRun,
+            ...currentRuns.filter((run) => run.id !== completedRun.id),
+          ].slice(0, 5),
+        );
+
+        return completedRun;
       });
     } catch (error) {
       console.error("Failed to call run API", error);
@@ -59,7 +71,15 @@ export default function Home() {
       setLatestRun((prev) => {
         if (!prev || prev.id !== runId) return prev;
 
-        return createFailedRunState(prev, message);
+        const failedRun = createFailedRunState(prev, message);
+        setRecentRuns((currentRuns) =>
+          [
+            failedRun,
+            ...currentRuns.filter((run) => run.id !== failedRun.id),
+          ].slice(0, 5),
+        );
+
+        return failedRun;
       });
     }
   };
@@ -80,6 +100,7 @@ export default function Home() {
           error={runError}
         />
         <LatestRunPanel latestRun={latestRun} onReset={handleReset} />
+        <RecentRunsList runs={recentRuns} onSelectRun={setLatestRun} />
       </div>
     </main>
   );
