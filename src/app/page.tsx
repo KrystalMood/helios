@@ -1,14 +1,7 @@
 "use client";
 import { useState } from "react";
-
 import type { LatestRun } from "@/lib/helios/types";
 import { getRunErrorMessage } from "@/lib/helios/errors";
-
-import { AppHeader } from "@/components/helios/app-header";
-import { RunForm } from "@/components/helios/run-form";
-import { LatestRunPanel } from "@/components/helios/latest-run-panel";
-import { RecentRunsList } from "@/components/helios/recent-runs-list";
-import { DashboardHero } from "@/components/helios/dashboard-hero";
 import {
   RUNNING_STATE_DELAY_MS,
   createQueuedRunState,
@@ -19,6 +12,14 @@ import {
   createCompletedRunState,
   createFailedRunState,
 } from "@/lib/helios/run-transformer";
+import { isValidHttpUrl } from "@/lib/helios/validators";
+import { addRecentRun } from "@/lib/helios/recent-runs";
+
+import { AppHeader } from "@/components/helios/app-header";
+import { RunForm } from "@/components/helios/run-form";
+import { LatestRunPanel } from "@/components/helios/latest-run-panel";
+import { RecentRunsList } from "@/components/helios/recent-runs-list";
+import { DashboardHero } from "@/components/helios/dashboard-hero";
 
 export default function Home() {
   const [latestRun, setLatestRun] = useState<LatestRun | null>(null);
@@ -35,6 +36,11 @@ export default function Home() {
     const formData = new FormData(e.currentTarget);
     const url = formData.get("url")?.toString().trim() ?? "";
 
+    if (!isValidHttpUrl(url)) {
+      setRunError("Please enter a valid HTTP or HTTPS URL.");
+      return;
+    }
+
     const { run } = createQueuedRunState(url);
     const runId = run.id;
 
@@ -50,37 +56,20 @@ export default function Home() {
     try {
       const result = await createRun(url);
 
-      setLatestRun((prev) => {
-        if (!prev || prev.id !== runId) return prev;
-        const completedRun = createCompletedRunState(prev, result);
+      const completedRun = createCompletedRunState(run, result);
 
-        setRecentRuns((currentRuns) =>
-          [
-            completedRun,
-            ...currentRuns.filter((run) => run.id !== completedRun.id),
-          ].slice(0, 5),
-        );
-
-        return completedRun;
-      });
+      setLatestRun(completedRun);
+      setRecentRuns((currentRuns) => addRecentRun(currentRuns, completedRun));
     } catch (error) {
       console.error("Failed to call run API", error);
 
       const message = getRunErrorMessage(error);
       setRunError(message);
-      setLatestRun((prev) => {
-        if (!prev || prev.id !== runId) return prev;
 
-        const failedRun = createFailedRunState(prev, message);
-        setRecentRuns((currentRuns) =>
-          [
-            failedRun,
-            ...currentRuns.filter((run) => run.id !== failedRun.id),
-          ].slice(0, 5),
-        );
+      const failedRun = createFailedRunState(run, message);
 
-        return failedRun;
-      });
+      setLatestRun(failedRun);
+      setRecentRuns((currentRuns) => addRecentRun(currentRuns, failedRun));
     }
   };
 

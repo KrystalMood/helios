@@ -1,17 +1,9 @@
 import { runSinglePageQA } from "@/lib/helios/server/runner";
+import { isValidHttpUrl } from "@/lib/helios/validators";
 
 type CreateRunRequest = {
   url?: string;
 };
-
-function isValidHttpUrl(value: string) {
-  try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
 
 export async function POST(request: Request) {
   let body: CreateRunRequest;
