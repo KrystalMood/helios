@@ -23,11 +23,23 @@ import {
 export function useRunDashboard() {
   const [latestRun, setLatestRun] = useState<LatestRun | null>(null);
   const [runError, setRunError] = useState<string | undefined>();
-  const [recentRuns, setRecentRuns] = useState<LatestRun[]>(loadRecentRuns);
+  const [recentRuns, setRecentRuns] = useState<LatestRun[]>([]);
+  const [hasLoadedRecentRuns, setHasLoadedRecentRuns] = useState(false);
 
   useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setRecentRuns(loadRecentRuns());
+      setHasLoadedRecentRuns(true);
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
+  useEffect(() => {
+    if (!hasLoadedRecentRuns) return;
+
     saveRecentRuns(recentRuns);
-  }, [recentRuns]);
+  }, [hasLoadedRecentRuns, recentRuns]);
 
   const isRunActive =
     latestRun?.status === "Queued" || latestRun?.status === "Running";
