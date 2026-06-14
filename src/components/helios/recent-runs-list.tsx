@@ -5,14 +5,28 @@ import { StatusBadge } from "@/components/helios/status-badge";
 type RecentRunsListProps = {
   runs: LatestRun[];
   onSelectRun: (run: LatestRun) => void;
+  onClearRuns: () => void;
 };
 
-export function RecentRunsList({ runs, onSelectRun }: RecentRunsListProps) {
+export function RecentRunsList({
+  runs,
+  onSelectRun,
+  onClearRuns,
+}: RecentRunsListProps) {
   if (runs.length <= 0) return null;
 
   return (
     <section className="mt-6 rounded-lg border border-border bg-panel p-5">
-      <h2 className="text-base font-medium text-foreground">Recent runs</h2>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="text-base font-medium text-foreground">Recent runs</h2>
+        <button
+          type="button"
+          onClick={onClearRuns}
+          className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
+        >
+          Clear
+        </button>
+      </div>
 
       <ul className="mt-4 space-y-3">
         {runs.map((run) => (

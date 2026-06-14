@@ -1,94 +1,24 @@
 "use client";
-import { useEffect, useState } from "react";
-import type { LatestRun } from "@/lib/helios/shared/types";
 
-// shared
-import { getRunErrorMessage } from "@/lib/helios/shared/errors";
-import { isValidHttpUrl } from "@/lib/helios/shared/validators";
+import { useRunDashboard } from "@/lib/helios/client/use-run-dashboard";
 
-// client
-import {
-  addRecentRun,
-  loadRecentRuns,
-  saveRecentRuns,
-} from "@/lib/helios/client/recent-runs";
-import { createRun } from "@/lib/helios/client/api";
-import {
-  RUNNING_STATE_DELAY_MS,
-  createQueuedRunState,
-  markRunRunning,
-} from "@/lib/helios/client/run-state";
-import {
-  createCompletedRunState,
-  createFailedRunState,
-} from "@/lib/helios/client/run-transformer";
-
-// components
 import { AppHeader } from "@/components/helios/app-header";
 import { DashboardHero } from "@/components/helios/dashboard-hero";
+import { RunForm } from "@/components/helios/run-form";
 import { LatestRunPanel } from "@/components/helios/latest-run-panel";
 import { RecentRunsList } from "@/components/helios/recent-runs-list";
-import { RunForm } from "@/components/helios/run-form";
 
 export default function Home() {
-  const [latestRun, setLatestRun] = useState<LatestRun | null>(null);
-  const [runError, setRunError] = useState<string | undefined>();
-  const [recentRuns, setRecentRuns] = useState<LatestRun[]>(loadRecentRuns);
-
-  useEffect(() => {
-    saveRecentRuns(recentRuns);
-  }, [recentRuns]);
-
-  const isRunActive =
-    latestRun?.status === "Queued" || latestRun?.status === "Running";
-
-  const handleSubmit: React.ComponentProps<"form">["onSubmit"] = async (e) => {
-    e.preventDefault();
-    setRunError(undefined);
-
-    const formData = new FormData(e.currentTarget);
-    const url = formData.get("url")?.toString().trim() ?? "";
-
-    if (!isValidHttpUrl(url)) {
-      setRunError("Please enter a valid HTTP or HTTPS URL.");
-      return;
-    }
-
-    const { run } = createQueuedRunState(url);
-    const runId = run.id;
-
-    setLatestRun(run);
-
-    setTimeout(() => {
-      setLatestRun((prev) => {
-        if (!prev || prev.id !== runId) return prev;
-        return markRunRunning(prev);
-      });
-    }, RUNNING_STATE_DELAY_MS);
-
-    try {
-      const result = await createRun(url);
-
-      const completedRun = createCompletedRunState(run, result);
-
-      setLatestRun(completedRun);
-      setRecentRuns((currentRuns) => addRecentRun(currentRuns, completedRun));
-    } catch (error) {
-      console.error("Failed to call run API", error);
-
-      const message = getRunErrorMessage(error);
-      setRunError(message);
-
-      const failedRun = createFailedRunState(run, message);
-
-      setLatestRun(failedRun);
-      setRecentRuns((currentRuns) => addRecentRun(currentRuns, failedRun));
-    }
-  };
-
-  const handleReset = () => {
-    setLatestRun(null);
-  };
+  const {
+    latestRun,
+    runError,
+    recentRuns,
+    isRunActive,
+    handleSubmit,
+    handleReset,
+    handleClearRecentRuns,
+    setLatestRun,
+  } = useRunDashboard();
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -102,7 +32,11 @@ export default function Home() {
           error={runError}
         />
         <LatestRunPanel latestRun={latestRun} onReset={handleReset} />
-        <RecentRunsList runs={recentRuns} onSelectRun={setLatestRun} />
+        <RecentRunsList
+          runs={recentRuns}
+          onSelectRun={setLatestRun}
+          onClearRuns={handleClearRecentRuns}
+        />
       </div>
     </main>
   );
