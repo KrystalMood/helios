@@ -1,30 +1,43 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { LatestRun } from "@/lib/helios/shared/types";
+
+// shared
 import { getRunErrorMessage } from "@/lib/helios/shared/errors";
+import { isValidHttpUrl } from "@/lib/helios/shared/validators";
+
+// client
+import {
+  addRecentRun,
+  loadRecentRuns,
+  saveRecentRuns,
+} from "@/lib/helios/client/recent-runs";
+import { createRun } from "@/lib/helios/client/api";
 import {
   RUNNING_STATE_DELAY_MS,
   createQueuedRunState,
   markRunRunning,
 } from "@/lib/helios/client/run-state";
-import { createRun } from "@/lib/helios/client/api";
 import {
   createCompletedRunState,
   createFailedRunState,
 } from "@/lib/helios/client/run-transformer";
-import { isValidHttpUrl } from "@/lib/helios/shared/validators";
-import { addRecentRun } from "@/lib/helios/client/recent-runs";
 
+// components
 import { AppHeader } from "@/components/helios/app-header";
-import { RunForm } from "@/components/helios/run-form";
+import { DashboardHero } from "@/components/helios/dashboard-hero";
 import { LatestRunPanel } from "@/components/helios/latest-run-panel";
 import { RecentRunsList } from "@/components/helios/recent-runs-list";
-import { DashboardHero } from "@/components/helios/dashboard-hero";
+import { RunForm } from "@/components/helios/run-form";
 
 export default function Home() {
   const [latestRun, setLatestRun] = useState<LatestRun | null>(null);
   const [runError, setRunError] = useState<string | undefined>();
-  const [recentRuns, setRecentRuns] = useState<LatestRun[]>([]);
+  const [recentRuns, setRecentRuns] = useState<LatestRun[]>(loadRecentRuns);
+
+  useEffect(() => {
+    saveRecentRuns(recentRuns);
+  }, [recentRuns]);
 
   const isRunActive =
     latestRun?.status === "Queued" || latestRun?.status === "Running";

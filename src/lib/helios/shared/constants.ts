@@ -6,3 +6,5 @@ export const PAGE_SETTLE_TIMEOUT_MS = 5_000;
 
 export const DOM_LOAD_WARNING_MS = 2_500;
 export const DOM_LOAD_SLOW_MS = 5_000;
+
+export const RECENT_RUNS_STORAGE_KEY = "helios:recent-runs";
