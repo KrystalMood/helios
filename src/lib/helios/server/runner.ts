@@ -1,13 +1,14 @@
 import { chromium, type Browser, type Page } from "playwright";
-import { mkdir } from "node:fs/promises";
-import path from "node:path";
-
-import { getPlaywrightErrorMessage } from "@/lib/helios/server/errors";
 
 import {
   PAGE_GOTO_TIMEOUT_MS,
   PAGE_SETTLE_TIMEOUT_MS,
 } from "@/lib/helios/shared/constants";
+
+import { getPlaywrightErrorMessage } from "@/lib/helios/server/errors";
+import { capturePageMetadata } from "@/lib/helios/server/metadata";
+import { captureBrokenImages } from "@/lib/helios/server/evidence";
+import { captureRunScreenshots } from "@/lib/helios/server/artifacts";
 
 type RunSinglePageQAProps = {
   submittedUrl: string;
@@ -94,16 +95,6 @@ export async function runSinglePageQA({
       );
     });
 
-    const artifactDir = path.join(
-      process.cwd(),
-      "public",
-      "artifacts",
-      "runs",
-      runId,
-    );
-
-    await mkdir(artifactDir, { recursive: true });
-
     await page.goto(submittedUrl, {
       waitUntil: "domcontentloaded",
       timeout: PAGE_GOTO_TIMEOUT_MS,
@@ -117,58 +108,15 @@ export async function runSinglePageQA({
     const desktopSettled = await waitForPageToSettle(page);
     const mobileSettled = await waitForPageToSettle(mobilePage);
 
-    const desktopScreenshotPath = path.join(artifactDir, "desktop.png");
-    const mobileScreenshotPath = path.join(artifactDir, "mobile.png");
+    const { title, finalUrl, description, loadMetrics } =
+      await capturePageMetadata(page);
 
-    const title = await page.title();
-    const finalUrl = page.url();
+    const brokenImages = await captureBrokenImages(page);
 
-    const description = await page.evaluate(() => {
-      const selectors = [
-        'meta[name="description"]',
-        'meta[property="og:description"]',
-        'meta[name="twitter:description"]',
-      ];
-
-      for (const selector of selectors) {
-        const content = document
-          .querySelector(selector)
-          ?.getAttribute("content")
-          ?.trim();
-
-        if (content) return content;
-      }
-      return undefined;
-    });
-
-    const loadMetrics = await page.evaluate(() => {
-      const navigation = performance.getEntriesByType("navigation")[0] as
-        | PerformanceNavigationTiming
-        | undefined;
-
-      if (!navigation) return undefined;
-
-      return {
-        domContentLoadedMs: Math.round(navigation.domContentLoadedEventEnd),
-        loadEventMs: Math.round(navigation.loadEventEnd),
-      };
-    });
-
-    const brokenImages = await page.evaluate(() => {
-      return Array.from(document.images)
-        .filter((image) => !image.complete || image.naturalWidth === 0)
-        .map((image) => image.currentSrc || image.src)
-        .filter(Boolean);
-    });
-
-    await page.screenshot({
-      path: desktopScreenshotPath,
-      fullPage: true,
-    });
-
-    await mobilePage.screenshot({
-      path: mobileScreenshotPath,
-      fullPage: true,
+    const artifacts = await captureRunScreenshots({
+      runId,
+      desktopPage: page,
+      mobilePage,
     });
 
     const finishedAt = new Date();
@@ -180,7 +128,7 @@ export async function runSinglePageQA({
       finalUrl,
       status: "Completed",
       title,
-      description: description ?? undefined,
+      description,
       createdAt: startedAt.toISOString(),
       finishedAt: finishedAt.toISOString(),
       durationMs,
@@ -233,10 +181,7 @@ export async function runSinglePageQA({
           timestamp: finishedAt.toISOString(),
         }),
       ],
-      artifacts: {
-        desktopScreenshot: `/artifacts/runs/${runId}/desktop.png`,
-        mobileScreenshot: `/artifacts/runs/${runId}/mobile.png`,
-      },
+      artifacts,
       brokenImages,
       consoleErrors,
       failedRequests,
