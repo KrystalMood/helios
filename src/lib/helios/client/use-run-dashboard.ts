@@ -63,7 +63,7 @@ export function useRunDashboard() {
 
     setTimeout(() => {
       setLatestRun((prev) => {
-        if (!prev || prev.id !== runId) return prev;
+        if (!prev || prev.id !== runId || prev.status !== "Queued") return prev;
         return markRunRunning(prev);
       });
     }, RUNNING_STATE_DELAY_MS);
@@ -76,9 +76,9 @@ export function useRunDashboard() {
       setLatestRun(completedRun);
       setRecentRuns((currentRuns) => addRecentRun(currentRuns, completedRun));
     } catch (error) {
-      console.error("Failed to call run API", error);
-
       const message = getRunErrorMessage(error);
+      console.warn("Failed to call run API", message);
+
       setRunError(message);
 
       const failedRun = createFailedRunState(run, message);

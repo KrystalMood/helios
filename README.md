@@ -2,33 +2,34 @@
 
 ![Helios Web QA Dashboard](./public/brand/helios-banner.png)
 
-Helios adalah QA observability dashboard untuk browser-based website checks. Fokus utamanya bukan cuma menemukan masalah, tapi membuat setiap QA run bisa diamati ulang lewat browser trail, screenshot, logs, artifacts, dan evidence.
+Helios is a QA observability dashboard for browser-based website checks. Its goal is not only to find issues, but to make every QA run inspectable through browser trails, screenshots, logs, artifacts, and evidence.
 
 > Evidence-based website QA powered by replayable browser runs.
 
 ## Core Loop
 
-1. User memasukkan starting URL.
-2. Helios membuat QA run.
-3. Browser runner membuka halaman target.
-4. Sistem mengumpulkan screenshot, console logs, network failures, dan trail steps.
-5. Dashboard menampilkan summary, findings, artifacts, dan evidence yang bisa diinspeksi.
+1. The user submits a starting URL.
+2. Helios creates a QA run.
+3. The browser runner opens the target page.
+4. The system collects screenshots, console logs, network failures, and trail steps.
+5. The dashboard displays the summary, findings, artifacts, and inspectable evidence.
 
-Untuk tahap awal, Helios belum fokus ke AI. Core pertamanya adalah dashboard dan automation pipeline yang stabil. Setelah evidence layer kuat, AI bisa ditambahkan untuk membuat report dan suggested next actions.
+Helios is not AI-first at this stage. The first core is a stable dashboard and automation pipeline. Once the evidence layer is strong, AI can be added to generate reports and suggested next actions.
 
 ## MVP
 
-- Input target URL
+- Target URL input
 - QA run lifecycle: queued, running, completed, failed
 - Browser trail/timeline
 - Basic QA summary
-- Screenshot desktop dan mobile
+- Desktop and mobile screenshots
 - Capture console errors
 - Capture failed network requests
-- Capture broken images dan page load metrics
-- Tampilkan report QA di dashboard
-- Preview artifacts dan export run result sebagai JSON
-- Recent runs in-memory untuk inspeksi cepat selama sesi
+- Capture broken images and page load metrics
+- Display QA reports in the dashboard
+- Preview artifacts and export run results as JSON
+- Persist recent runs in localStorage for quick inspection during development
+- Evidence interactions: show all, copy item, and copy all
 
 ## Tech Stack
 
@@ -58,13 +59,13 @@ Install dependencies:
 npm install
 ```
 
-Jalankan development server:
+Run the development server:
 
 ```bash
 npm run dev
 ```
 
-Buka app di browser:
+Open the app in your browser:
 
 ```txt
 http://localhost:3000
@@ -72,4 +73,22 @@ http://localhost:3000
 
 ## Status
 
-Prototype QA-first sudah memakai real Playwright runner untuk single-page checks. Fokus berikutnya adalah memoles page load metrics, better error handling, richer evidence, dan persiapan persistence sebelum masuk ke database-backed run history.
+The prototype now uses a real Playwright runner for single-page checks.
+
+Completed:
+
+- Real Playwright single-page browser runs
+- Desktop and mobile screenshot artifacts
+- Console error and failed request evidence
+- Broken image checks
+- Page metadata and load metrics
+- User-friendly browser-run error handling
+- Evidence copy, copy all, and show all interactions
+- localStorage-backed recent runs
+- Runner helper modules for metadata, evidence, artifacts, navigation, and trail steps
+
+Next:
+
+- Smoke-test edge cases
+- Prepare database-backed run history
+- Add run detail routes
