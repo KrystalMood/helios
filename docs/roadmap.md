@@ -36,12 +36,10 @@ Completed:
 - JSON export for run results
 - localStorage-backed recent runs
 - Runner helper modules for metadata, evidence, artifacts, navigation, and trail steps
+- Smoke-test Phase 2 edge cases (invalid URLs, browser timeouts, and 404 responses)
+- Mobile layout fix for large evidence payloads (preventing horizontal overflow)
+- Confirmed artifact paths and screenshots behave consistently after refresh
 
-Remaining polish:
-
-- Smoke-test Phase 2 edge cases
-- Review mobile layout with large evidence payloads
-- Confirm artifact paths and screenshots behave consistently after refresh
 
 ## Phase 3: Persisted Run History
 
@@ -61,9 +59,9 @@ Initial model direction:
 
 Implementation checklist:
 
-- [ ] Install and configure Prisma
-- [ ] Add PostgreSQL connection environment variable
-- [ ] Create initial `Run` schema
+- [x] Install and configure Prisma
+- [x] Add PostgreSQL connection environment variable
+- [x] Create initial `Run` schema
 - [ ] Persist completed runs from `POST /api/runs`
 - [ ] Persist failed runs from `POST /api/runs`
 - [ ] Add `GET /api/runs` for recent run history

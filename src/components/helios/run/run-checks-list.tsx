@@ -23,7 +23,7 @@ export function RunChecksList({ checks }: RunChecksListProps) {
               key={`${check.title}-${index}`}
               className="border-b border-border pb-3 last:border-b-0 last:pb-0"
             >
-              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-foreground">{check.title}</p>
                 <span
                   className={

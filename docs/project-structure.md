@@ -94,6 +94,18 @@ Shared types and pure helpers live here. These files can be used by both client 
 - `validators.ts`: URL validation helpers.
 - `errors.ts`: client-facing API error message helpers.
 - `overview-cards.ts`: dashboard overview card data.
+## Database Configuration
+
+```txt
+prisma/
+  schema.prisma
+prisma.config.ts
+```
+
+Prisma ORM files for database connection and schema configuration.
+
+- `prisma/schema.prisma`: Defines the PostgreSQL connection provider, client generator target (`src/generated/prisma`), and database models (including the `Run` model).
+- `prisma.config.ts`: Configures the schema paths, migration paths, and loads database credentials dynamically via environment variables from `.env`.
 
 ## Public Artifacts
 
