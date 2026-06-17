@@ -1,16 +1,15 @@
 import type { LatestRun } from "@/lib/helios/shared/types";
 import { formatDurationMs, formatTimestamp } from "@/lib/helios/shared/format";
 import { StatusBadge } from "@/components/helios/run/status-badge";
+import Link from "next/link";
 
 type RecentRunsListProps = {
   runs: LatestRun[];
-  onSelectRun: (run: LatestRun) => void;
   onClearRuns: () => void;
 };
 
 export function RecentRunsList({
   runs,
-  onSelectRun,
   onClearRuns,
 }: RecentRunsListProps) {
   if (runs.length <= 0) return null;
@@ -47,13 +46,12 @@ export function RecentRunsList({
 
               <div className="flex items-center gap-2">
                 <StatusBadge status={run.status} />
-                <button
-                  type="button"
-                  onClick={() => onSelectRun(run)}
+                <Link
+                  href={`/runs/${run.id}`}
                   className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
                 >
                   View
-                </button>
+                </Link>
               </div>
             </div>
           </li>

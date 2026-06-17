@@ -1,10 +1,9 @@
 import { prisma } from "@/lib/prisma";
-import { NextRequest } from "next/server";
 
 import { runRecordToLatestRun } from "@/lib/helios/server/run-record";
 
 export async function GET(
-  _request: NextRequest,
+  _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;

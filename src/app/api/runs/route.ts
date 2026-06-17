@@ -109,7 +109,7 @@ export async function POST(request: Request) {
       },
     });
   } catch (dbError) {
-    console.error("Failed to persist completed run:", dbError)
+    console.error("Failed to persist completed run:", dbError);
   }
 
   return Response.json(result);

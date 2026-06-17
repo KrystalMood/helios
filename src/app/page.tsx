@@ -17,7 +17,6 @@ export default function Home() {
     handleSubmit,
     handleReset,
     handleClearRecentRuns,
-    setLatestRun,
   } = useRunDashboard();
 
   return (
@@ -34,7 +33,6 @@ export default function Home() {
         <LatestRunPanel latestRun={latestRun} onReset={handleReset} />
         <RecentRunsList
           runs={recentRuns}
-          onSelectRun={setLatestRun}
           onClearRuns={handleClearRecentRuns}
         />
       </div>

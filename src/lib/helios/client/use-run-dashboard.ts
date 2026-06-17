@@ -113,6 +113,5 @@ export function useRunDashboard() {
     handleSubmit,
     handleReset,
     handleClearRecentRuns,
-    setLatestRun,
   };
 }
