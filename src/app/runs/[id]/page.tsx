@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 import { AppHeader } from "@/components/helios/layout/app-header";
 import { StatusBadge } from "@/components/helios/run/status-badge";
@@ -7,9 +8,33 @@ import { RunMetadata } from "@/components/helios/run/run-metadata";
 import { RunEvidenceList } from "@/components/helios/evidence/run-evidence-list";
 import { RunChecksList } from "@/components/helios/run/run-checks-list";
 import { BrowserTrail } from "@/components/helios/run/browser-trail";
+import { ArtifactViewer } from "@/components/helios/evidence/artifact-viewer";
 
 import { prisma } from "@/lib/prisma";
 import { runRecordToLatestRun } from "@/lib/helios/server/run-record";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const record = await prisma.run.findUnique({
+    where: { id },
+    select: { startingUrl: true, title: true },
+  });
+
+  if (!record) {
+    return {
+      title: "Run not found - Helios",
+    };
+  }
+
+  const label = record.title ?? record.startingUrl;
+  return {
+    title: `${label} - Helios`,
+  };
+}
 
 export default async function RunDetailPage({
   params,
@@ -42,7 +67,17 @@ export default async function RunDetailPage({
           <StatusBadge status={run.status} />
         </div>
 
+        <h1 className="text-lg font-semibold text-foreground mb-1 break-all">
+          {run.title ?? run.startingUrl}
+        </h1>
+        {run.title ? (
+          <p className="text-sm text-muted mb-6 break-all">{run.startingUrl}</p>
+        ) : (
+          <div className="mb-6" />
+        )}
+
         <section className="rounded-lg border border-border bg-panel p-5 space-y-4">
+          {run.artifacts ? <ArtifactViewer artifacts={run.artifacts} /> : null}
           <RunMetadata run={run} />
           <RunEvidenceList
             brokenImages={run.brokenImages}

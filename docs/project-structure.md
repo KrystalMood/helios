@@ -7,11 +7,15 @@ This document explains the main folders used by Helios and what belongs in each 
 ```txt
 src/app/
   page.tsx
+  runs/[id]/page.tsx
   api/runs/route.ts
+  api/runs/[id]/route.ts
 ```
 
 - `src/app/page.tsx` renders the main Helios dashboard.
-- `src/app/api/runs/route.ts` accepts run creation requests and calls the server-side Playwright runner.
+- `src/app/runs/[id]/page.tsx` renders the run detail page for a stable run URL.
+- `src/app/api/runs/route.ts` handles run creation (`POST`) and recent run history (`GET`).
+- `src/app/api/runs/[id]/route.ts` returns a single run's full payload by ID.
 
 ## Helios Components
 
@@ -55,8 +59,8 @@ src/lib/helios/client/
 
 Client-side state, API calls, and UI-facing transformations live here.
 
-- `api.ts`: calls `/api/runs`.
-- `recent-runs.ts`: localStorage-backed recent run helpers.
+- `api.ts`: calls `/api/runs` and `/api/runs/[id]`.
+- `recent-runs.ts`: pure helper for deduplicating and capping the recent runs list.
 - `run-state.ts`: queued/running state helpers.
 - `run-transformer.ts`: transforms API responses into dashboard run state.
 - `use-run-dashboard.ts`: dashboard orchestration hook used by `page.tsx`.
@@ -71,6 +75,7 @@ src/lib/helios/server/
 Server-only Playwright runner code lives here. These modules should not be imported by client components.
 
 - `runner.ts`: main single-page QA runner orchestration.
+- `run-record.ts`: maps Prisma `Run` records to `LatestRun` shape for API responses.
 - `metadata.ts`: captures title, final URL, meta description, and load metrics.
 - `evidence.ts`: captures broken images and attaches console/network evidence listeners.
 - `artifacts.ts`: creates screenshot artifact paths and captures screenshots.

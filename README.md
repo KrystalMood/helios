@@ -28,7 +28,7 @@ Helios is not AI-first at this stage. The first core is a stable dashboard and a
 - Capture broken images and page load metrics
 - Display QA reports in the dashboard
 - Preview artifacts and export run results as JSON
-- Persist recent runs in localStorage for quick inspection during development
+- Database-backed run history with stable run detail URLs
 - Evidence interactions: show all, copy item, and copy all
 
 ## Tech Stack
@@ -78,7 +78,7 @@ http://localhost:3000
 
 ## Status
 
-The prototype now uses a real Playwright runner for single-page checks.
+Phase 3 is complete. Helios now uses a real Playwright runner with database-backed run persistence.
 
 Completed:
 
@@ -89,11 +89,14 @@ Completed:
 - Page metadata and load metrics
 - User-friendly browser-run error handling
 - Evidence copy, copy all, and show all interactions
-- localStorage-backed recent runs
 - Runner helper modules for metadata, evidence, artifacts, navigation, and trail steps
+- Prisma ORM with PostgreSQL for run persistence
+- Completed and failed runs persisted to database
+- `GET /api/runs` for recent run history from database
+- `GET /api/runs/[id]` for stable run detail payload
+- `/runs/[id]` detail page with stable URL per run
+- Recent runs list sourced from database, localStorage removed
 
 Next:
 
-- Smoke-test edge cases
-- Prepare database-backed run history
-- Add run detail routes
+- AI-assisted QA reports: summaries, triage suggestions, severity classification, and exportable reports

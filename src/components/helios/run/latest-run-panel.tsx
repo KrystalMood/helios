@@ -11,6 +11,7 @@ import { BrowserTrail } from "@/components/helios/run/browser-trail";
 import { RunMetadata } from "@/components/helios/run/run-metadata";
 import { RunEvidenceList } from "@/components/helios/evidence/run-evidence-list";
 import { downloadRunJson } from "@/lib/helios/client/export";
+import Link from "next/link";
 
 type LatestRunPanelProps = {
   latestRun: LatestRun | null;
@@ -41,6 +42,14 @@ export function LatestRunPanel({ latestRun, onReset }: LatestRunPanelProps) {
               >
                 Export JSON
               </button>
+              {latestRun.status === "Completed" ? (
+                <Link
+                  href={`/runs/${latestRun.id}`}
+                  className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
+                >
+                  View run
+                </Link>
+              ) : null}
               <button
                 type="button"
                 onClick={onReset}

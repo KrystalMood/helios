@@ -62,12 +62,12 @@ Implementation checklist:
 - [x] Install and configure Prisma
 - [x] Add PostgreSQL connection environment variable
 - [x] Create initial `Run` schema
-- [ ] Persist completed runs from `POST /api/runs`
-- [ ] Persist failed runs from `POST /api/runs`
-- [ ] Add `GET /api/runs` for recent run history
-- [ ] Add `GET /api/runs/[id]` for a single run detail payload
-- [ ] Add `/runs/[id]` detail route
-- [ ] Replace localStorage recent runs with database-backed history
+- [x] Persist completed runs from `POST /api/runs`
+- [x] Persist failed runs from `POST /api/runs`
+- [x] Add `GET /api/runs` for recent run history
+- [x] Add `GET /api/runs/[id]` for a single run detail payload
+- [x] Add `/runs/[id]` detail route
+- [x] Replace localStorage recent runs with database-backed history
 
 Definition of done:
 
