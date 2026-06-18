@@ -47,6 +47,17 @@ export async function getRunDetail(id: string): Promise<LatestRun> {
   return result as LatestRun;
 }
 
+export async function deleteRun(id: string): Promise<void> {
+  const response = await fetch(`/api/runs/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    const result = await response.json();
+    throw result;
+  }
+}
+
 export async function clearRecentRuns(): Promise<void> {
   const response = await fetch("/api/runs", {
     method: "DELETE",

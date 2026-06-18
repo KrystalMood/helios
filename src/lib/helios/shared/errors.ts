@@ -12,3 +12,11 @@ export function getRunErrorMessage(error: unknown) {
 
   return "Helios could not complete the browser QA run.";
 }
+
+export function getErrorMessage(
+  error: unknown,
+  fallback = "An unexpected error occurred.",
+): string {
+  if (error instanceof Error) return error.message;
+  return fallback;
+}

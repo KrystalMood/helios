@@ -8,6 +8,7 @@ import {
   createRun,
   getRecentRuns,
   clearRecentRuns,
+  deleteRun,
 } from "@/lib/helios/client/api";
 import { addRecentRun } from "@/lib/helios/client/recent-runs";
 import {
@@ -104,6 +105,18 @@ export function useRunDashboard() {
     setLatestRun(null);
   };
 
+  const handleDeleteRun = async (id: string) => {
+    try {
+      await deleteRun(id);
+    } catch (error) {
+      console.error("Failed to delete run:", error);
+      return;
+    }
+
+    setRecentRuns((current) => current.filter((r) => r.id !== id));
+    setLatestRun((currentRun) => (currentRun?.id === id ? null : currentRun));
+  };
+
   const handleClearRecentRuns = async () => {
     try {
       await clearRecentRuns();
@@ -126,5 +139,6 @@ export function useRunDashboard() {
     handleSubmit,
     handleReset,
     handleClearRecentRuns,
+    handleDeleteRun,
   };
 }

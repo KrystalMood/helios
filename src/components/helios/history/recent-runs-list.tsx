@@ -8,10 +8,16 @@ import Link from "next/link";
 type RecentRunsListProps = {
   runs: LatestRun[];
   onClearRuns: () => void;
+  onDeleteRun: (id: string) => void;
 };
 
-export function RecentRunsList({ runs, onClearRuns }: RecentRunsListProps) {
+export function RecentRunsList({
+  runs,
+  onClearRuns,
+  onDeleteRun,
+}: RecentRunsListProps) {
   const [confirming, setConfirming] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   if (runs.length <= 0) return null;
 
   return (
@@ -82,6 +88,36 @@ export function RecentRunsList({ runs, onClearRuns }: RecentRunsListProps) {
                 >
                   View
                 </Link>
+                {deletingId === run.id ? (
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs text-muted">Delete?</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onDeleteRun(run.id);
+                        setDeletingId(null);
+                      }}
+                      className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
+                    >
+                      Yes
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDeletingId(null)}
+                      className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setDeletingId(run.id)}
+                    className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
             </div>
           </li>

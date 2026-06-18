@@ -19,6 +19,7 @@ export default function Home() {
     handleSubmit,
     handleReset,
     handleClearRecentRuns,
+    handleDeleteRun,
   } = useRunDashboard();
 
   return (
@@ -41,6 +42,7 @@ export default function Home() {
           <RecentRunsList
             runs={recentRuns}
             onClearRuns={handleClearRecentRuns}
+            onDeleteRun={handleDeleteRun}
           />
         )}
       </div>

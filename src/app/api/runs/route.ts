@@ -4,6 +4,7 @@ import { isValidHttpUrl } from "@/lib/helios/shared/validators";
 import { prisma } from "@/lib/prisma";
 import { createChecksFromRunResult } from "@/lib/helios/shared/checks";
 import { runRecordToLatestRun } from "@/lib/helios/server/run-record";
+import { getErrorMessage } from "@/lib/helios/shared/errors";
 
 type CreateRunRequest = {
   url?: string;
@@ -47,8 +48,7 @@ export async function POST(request: Request) {
       runId,
     });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unknown Playwright error.";
+    const message = getErrorMessage(error, "Unknown Playwright error.");
     const failedAt = new Date();
 
     try {
@@ -129,7 +129,7 @@ export async function GET() {
     return Response.json(
       {
         error: "Failed to fetch runs",
-        message: error instanceof Error ? error.message : "Database error",
+        message: getErrorMessage(error, "Database error"),
       },
       {
         status: 500,
@@ -146,7 +146,7 @@ export async function DELETE() {
     return Response.json(
       {
         error: "Failed to clear runs",
-        message: error instanceof Error ? error.message : "Database error",
+        message: getErrorMessage(error, "Database error"),
       },
       { status: 500 },
     );

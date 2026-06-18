@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
 import { runRecordToLatestRun } from "@/lib/helios/server/run-record";
+import { getErrorMessage } from "@/lib/helios/shared/errors";
 
 export async function GET(
   _request: Request,
@@ -25,8 +26,30 @@ export async function GET(
     return Response.json(
       {
         error: "Database error",
-        message:
-          error instanceof Error ? error.message : "Failed to retrieve run.",
+        message: getErrorMessage(error, "Failed to retrieve run."),
+      },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+
+  try {
+    await prisma.run.deleteMany({
+      where: { id },
+    });
+
+    return new Response(null, { status: 204 });
+  } catch (error) {
+    return Response.json(
+      {
+        error: "Database error",
+        message: getErrorMessage(error, "Failed to delete run."),
       },
       { status: 500 },
     );
