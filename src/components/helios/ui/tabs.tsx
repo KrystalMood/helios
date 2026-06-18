@@ -19,8 +19,8 @@ export function Tabs({ tabs }: TabsProps) {
   return (
     <div>
       <div
-        className="flex w-full items-center gap-4 border-b border-border mb-6"
         role="tablist"
+        className="flex w-full items-center gap-4 border-b border-border mb-6"
       >
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;

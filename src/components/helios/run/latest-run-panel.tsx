@@ -5,6 +5,7 @@ import {
   getOverviewCardDescription,
   getOverviewCards,
 } from "@/lib/helios/shared/overview-cards";
+import { HELIOS_ROUTES } from "@/lib/helios/shared/route";
 
 import type { LatestRun } from "@/lib/helios/shared/types";
 import { RunChecksList } from "@/components/helios/run/run-checks-list";
@@ -45,7 +46,7 @@ export function LatestRunPanel({ latestRun, onReset }: LatestRunPanelProps) {
               </button>
               {canExport ? (
                 <Link
-                  href={`/runs/${latestRun.id}`}
+                  href={HELIOS_ROUTES.runDetail(latestRun.id)}
                   className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
                 >
                   View run
