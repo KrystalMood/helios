@@ -5,7 +5,7 @@ import {
   getOverviewCardDescription,
   getOverviewCards,
 } from "@/lib/helios/shared/overview-cards";
-import { HELIOS_ROUTES } from "@/lib/helios/shared/route";
+import { HELIOS_ROUTES } from "@/lib/helios/shared/routes";
 
 import type { LatestRun } from "@/lib/helios/shared/types";
 import { RunChecksList } from "@/components/helios/run/run-checks-list";

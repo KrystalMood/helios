@@ -10,6 +10,7 @@ import { RunChecksList } from "@/components/helios/run/run-checks-list";
 import { BrowserTrail } from "@/components/helios/run/browser-trail";
 import { RunSummaryHeader } from "@/components/helios/run/summary-header";
 import { Tabs, type TabItem } from "@/components/helios/ui/tabs";
+import { ScreenshotGallery } from "@/components/helios/run/screenshot-gallery";
 
 import { runRecordToLatestRun } from "@/lib/helios/server/run-record";
 
@@ -56,7 +57,12 @@ export default async function RunDetailPage({
     {
       id: "overview",
       label: "Overview",
-      content: <RunMetadata run={run} />,
+      content: (
+        <div className="flex flex-col">
+          <RunMetadata run={run} />
+          <ScreenshotGallery artifacts={run.artifacts} />
+        </div>
+      ),
     },
     {
       id: "evidence",

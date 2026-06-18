@@ -4,7 +4,7 @@ import type { LatestRun } from "@/lib/helios/shared/types";
 import { StatusBadge } from "@/components/helios/run/status-badge";
 import { ExportRunButton } from "@/components/helios/run/export-run-button";
 import { formatDurationMs, formatTimestamp } from "@/lib/helios/shared/format";
-import { HELIOS_ROUTES } from "@/lib/helios/shared/route";
+import { HELIOS_ROUTES } from "@/lib/helios/shared/routes";
 
 type RunSummaryHeaderProps = {
   run: LatestRun;

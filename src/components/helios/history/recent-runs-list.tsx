@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { LatestRun } from "@/lib/helios/shared/types";
-import { HELIOS_ROUTES } from "@/lib/helios/shared/route";
+import { HELIOS_ROUTES } from "@/lib/helios/shared/routes";
 
 import { formatDurationMs, formatTimestamp } from "@/lib/helios/shared/format";
 import { StatusBadge } from "@/components/helios/run/status-badge";
