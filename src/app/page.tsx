@@ -13,6 +13,8 @@ export default function Home() {
     latestRun,
     runError,
     recentRuns,
+    isHistoryLoading,
+    historyError,
     isRunActive,
     handleSubmit,
     handleReset,
@@ -31,10 +33,16 @@ export default function Home() {
           error={runError}
         />
         <LatestRunPanel latestRun={latestRun} onReset={handleReset} />
-        <RecentRunsList
-          runs={recentRuns}
-          onClearRuns={handleClearRecentRuns}
-        />
+        {isHistoryLoading ? (
+          <p className="mt-6 text-sm text-muted">Loading recent runs...</p>
+        ) : historyError ? (
+          <p className="mt-6 text-sm text-muted">{historyError}</p>
+        ) : (
+          <RecentRunsList
+            runs={recentRuns}
+            onClearRuns={handleClearRecentRuns}
+          />
+        )}
       </div>
     </main>
   );

@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import type { LatestRun } from "@/lib/helios/shared/types";
 import { formatDurationMs, formatTimestamp } from "@/lib/helios/shared/format";
 import { StatusBadge } from "@/components/helios/run/status-badge";
@@ -9,19 +11,43 @@ type RecentRunsListProps = {
 };
 
 export function RecentRunsList({ runs, onClearRuns }: RecentRunsListProps) {
+  const [confirming, setConfirming] = useState(false);
   if (runs.length <= 0) return null;
 
   return (
     <section className="mt-6 rounded-lg border border-border bg-panel p-5">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-base font-medium text-foreground">Recent runs</h2>
-        <button
-          type="button"
-          onClick={onClearRuns}
-          className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
-        >
-          Clear
-        </button>
+        {confirming ? (
+          <div className="flex items-center gap-1">
+            <span className="text-xs text-muted">Sure?</span>
+            <button
+              type="button"
+              onClick={() => {
+                onClearRuns();
+                setConfirming(false);
+              }}
+              className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
+            >
+              Yes
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirming(false)}
+              className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setConfirming(true)}
+            className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
+          >
+            Clear
+          </button>
+        )}
       </div>
 
       <ul className="mt-4 space-y-3">

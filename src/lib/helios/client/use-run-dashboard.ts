@@ -24,17 +24,26 @@ export function useRunDashboard() {
   const [latestRun, setLatestRun] = useState<LatestRun | null>(null);
   const [runError, setRunError] = useState<string | undefined>();
   const [recentRuns, setRecentRuns] = useState<LatestRun[]>([]);
+  const [isHistoryLoading, setIsHistoryLoading] = useState(true);
+  const [historyError, setHistoryError] = useState<string | undefined>();
 
   useEffect(() => {
     let active = true;
     async function fetchHistory() {
       try {
+        setIsHistoryLoading(true);
         const history = await getRecentRuns();
         if (active) {
           setRecentRuns(history);
+          setHistoryError(undefined);
         }
       } catch (error) {
-        console.warn("Failed to load recent runs:", error);
+        if (active) {
+          console.warn("Failed to load recent runs:", error);
+          setHistoryError("Failed to load recent runs.");
+        }
+      } finally {
+        if (active) setIsHistoryLoading(false);
       }
     }
 
@@ -111,6 +120,8 @@ export function useRunDashboard() {
     latestRun,
     runError,
     recentRuns,
+    isHistoryLoading,
+    historyError,
     isRunActive,
     handleSubmit,
     handleReset,
