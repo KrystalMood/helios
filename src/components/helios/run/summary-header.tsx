@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { LatestRun } from "@/lib/helios/shared/types";
+import { ArrowLeft } from "lucide-react";
 
 import { StatusBadge } from "@/components/helios/run/status-badge";
 import { ExportRunButton } from "@/components/helios/run/export-run-button";
@@ -19,9 +20,10 @@ export function RunSummaryHeader({ run }: RunSummaryHeaderProps) {
       <div className="mb-4 flex items-center justify-between">
         <Link
           href={HELIOS_ROUTES.dashboard}
-          className="text-sm text-muted hover:text-foreground transition"
+          className="inline-flex items-center gap-2 text-sm text-muted hover:text-foreground transition"
         >
-          &larr; Back to dashboard
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to dashboard
         </Link>
         <div className="flex items-center gap-2">
           <StatusBadge status={run.status} />

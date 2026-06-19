@@ -4,15 +4,14 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 
 import { AppHeader } from "@/components/helios/layout/app-header";
-import { RunMetadata } from "@/components/helios/run/run-metadata";
 import { RunEvidenceList } from "@/components/helios/evidence/run-evidence-list";
 import { RunChecksList } from "@/components/helios/run/run-checks-list";
 import { BrowserTrail } from "@/components/helios/run/browser-trail";
 import { RunSummaryHeader } from "@/components/helios/run/summary-header";
 import { Tabs, type TabItem } from "@/components/helios/ui/tabs";
-import { ScreenshotGallery } from "@/components/helios/run/screenshot-gallery";
 
 import { runRecordToLatestRun } from "@/lib/helios/server/run-record";
+import { RunOverview } from "@/components/helios/run/run-overview";
 
 const getRunById = cache(async (id: string) => {
   return prisma.run.findUnique({ where: { id } });
@@ -57,12 +56,7 @@ export default async function RunDetailPage({
     {
       id: "overview",
       label: "Overview",
-      content: (
-        <div className="flex flex-col">
-          <RunMetadata run={run} />
-          <ScreenshotGallery artifacts={run.artifacts} />
-        </div>
-      ),
+      content: <RunOverview run={run} />,
     },
     {
       id: "evidence",

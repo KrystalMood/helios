@@ -10,9 +10,8 @@ import { HELIOS_ROUTES } from "@/lib/helios/shared/routes";
 import type { LatestRun } from "@/lib/helios/shared/types";
 import { RunChecksList } from "@/components/helios/run/run-checks-list";
 import { BrowserTrail } from "@/components/helios/run/browser-trail";
-import { RunMetadata } from "@/components/helios/run/run-metadata";
+import { RunOverview } from "@/components/helios/run/run-overview";
 import { RunEvidenceList } from "@/components/helios/evidence/run-evidence-list";
-import { ArtifactViewer } from "@/components/helios/evidence/artifact-viewer";
 import { downloadRunJson } from "@/lib/helios/client/export";
 
 type LatestRunPanelProps = {
@@ -66,12 +65,7 @@ export function LatestRunPanel({ latestRun, onReset }: LatestRunPanelProps) {
 
       <div className="mt-4 text-sm text-muted">
         {latestRun ? (
-          <>
-            {latestRun.artifacts ? (
-              <ArtifactViewer artifacts={latestRun.artifacts} />
-            ) : null}
-            <RunMetadata run={latestRun} />
-          </>
+          <RunOverview run={latestRun} />
         ) : (
           <div className="rounded-md border border-dashed border-border bg-card p-4">
             <p className="text-sm font-medium text-foreground">
