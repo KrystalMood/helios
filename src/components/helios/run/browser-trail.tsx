@@ -1,12 +1,20 @@
 import type { TrailStep } from "@/lib/helios/shared/types";
 import { formatTimestamp } from "@/lib/helios/shared/format";
+import { EmptyState } from "../ui/empty-state";
 
 type BrowserTrailProps = {
   trail: TrailStep[];
 };
 
 export function BrowserTrail({ trail }: BrowserTrailProps) {
-  if (trail.length === 0) return null;
+  if (trail.length === 0) {
+    return (
+      <EmptyState
+        title="No browser trail"
+        description="Helios couldn't capture the execution trail for this run."
+      />
+    );
+  }
   return (
     <div className="mt-5 border-t border-border pt-4">
       <h3 className="text-sm font-medium text-foreground">Browser trail</h3>

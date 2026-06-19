@@ -29,6 +29,8 @@ export function Tabs({ tabs }: TabsProps) {
               type="button"
               role="tab"
               aria-selected={isActive}
+              id={`tab-${tab.id}`}
+              aria-controls={`panel-${tab.id}`}
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`pb-3 text-sm font-medium transition-colors border-b-2 -mb-px ${isActive ? "border-foreground text-foreground" : "border-transparent text-muted hover:text-foreground"}`}
@@ -39,7 +41,13 @@ export function Tabs({ tabs }: TabsProps) {
         })}
       </div>
 
-      <div className="mt-4">
+      <div
+        className="mt-4 focus:outline-none"
+        role="tabpanel"
+        id={`panel-${activeTab}`}
+        aria-labelledby={`tab-${activeTab}`}
+        tabIndex={0}
+      >
         {tabs.find((t) => t.id === activeTab)?.content}
       </div>
     </div>

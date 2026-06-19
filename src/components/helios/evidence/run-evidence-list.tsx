@@ -6,6 +6,7 @@ import {
 } from "@/lib/helios/shared/constants";
 
 import { EvidenceSection } from "@/components/helios/evidence/evidence-section";
+import { EmptyState } from "../ui/empty-state";
 
 type RunEvidenceListProps = {
   brokenImages?: string[];
@@ -93,7 +94,12 @@ export function RunEvidenceList({
     visibleFailedRequests.length === 0 &&
     visibleBrokenImages.length === 0
   ) {
-    return null;
+    return (
+      <EmptyState
+        title="No issues found"
+        description="This run didn't detect any broken images, console errors, or failed requests."
+      />
+    );
   }
 
   return (

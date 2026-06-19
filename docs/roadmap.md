@@ -66,8 +66,11 @@ Implementation checklist:
 - [x] Persist failed runs from `POST /api/runs`
 - [x] Add `GET /api/runs` for recent run history
 - [x] Add `GET /api/runs/[id]` for a single run detail payload
+- [x] Add delete actions for all runs and individual runs
 - [x] Add `/runs/[id]` detail route
 - [x] Replace localStorage recent runs with database-backed history
+- [x] Add run detail tabs for overview, evidence, checks, and browser trail
+- [x] Add empty states for checks, evidence, and trail sections
 
 Definition of done:
 
@@ -75,6 +78,7 @@ Definition of done:
 - Recent run history is loaded from the database.
 - Each run has a stable detail URL.
 - Completed and failed runs are both persisted.
+- Run history can be cleared or cleaned up one run at a time.
 - Existing Phase 2 evidence, screenshots, checks, and metadata still render correctly.
 
 ## Later: AI-Assisted QA Reports

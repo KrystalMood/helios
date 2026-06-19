@@ -1,5 +1,6 @@
 import type { CheckResult, CheckStatus } from "@/lib/helios/shared/types";
 import { formatLabel } from "@/lib/helios/shared/format";
+import { EmptyState } from "../ui/empty-state";
 
 type RunChecksListProps = {
   checks: CheckResult[];
@@ -12,7 +13,15 @@ const checkStatusClasses: Record<CheckStatus, string> = {
 };
 
 export function RunChecksList({ checks }: RunChecksListProps) {
-  if (checks.length === 0) return null;
+  if (checks.length === 0) {
+    return (
+      <EmptyState
+        title="No checks run"
+        description="No automated QA checks were executed for this run."
+      />
+    );
+  }
+
   return (
     <div className="mt-5 border-t border-border pt-4">
       <h3 className="text-sm font-medium text-foreground">QA checks</h3>

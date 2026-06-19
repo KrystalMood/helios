@@ -25,6 +25,7 @@ src/components/helios/
   history/
   layout/
   run/
+  ui/
 ```
 
 UI components for the dashboard live here. These components render forms, latest run details, metadata, screenshots, evidence, checks, browser trail, status badges, and recent runs.
@@ -35,6 +36,7 @@ Component groups:
 - `run/`: run form, latest run panel, metadata, checks, timeline, overview cards, and status badge.
 - `evidence/`: artifact viewer, evidence list, grouped evidence sections, and copyable evidence items.
 - `history/`: recent run history preview.
+- `ui/`: small reusable UI primitives shared by Helios components.
 
 Important components:
 
@@ -42,7 +44,9 @@ Important components:
 - `layout/dashboard-hero.tsx`: dashboard hero copy and badges.
 - `run/run-form.tsx`: URL input and submit state.
 - `run/latest-run-panel.tsx`: main result panel for the selected/latest run.
+- `run/summary-header.tsx`: run detail header with status, export, timing, and navigation.
 - `run/run-metadata.tsx`: run metadata, timing, and page metadata.
+- `run/screenshot-gallery.tsx`: static screenshot gallery used by the run detail overview.
 - `run/export-run-button.tsx`: client-side button for exporting a run as JSON.
 - `run/run-checks-list.tsx`: QA check result list.
 - `run/browser-trail.tsx`: run timeline.
@@ -51,6 +55,8 @@ Important components:
 - `evidence/evidence-section.tsx`: reusable grouped evidence section.
 - `evidence/evidence-item.tsx`: reusable evidence item with copy action.
 - `history/recent-runs-list.tsx`: recent run history preview.
+- `ui/tabs.tsx`: tabbed section layout used by run detail pages.
+- `ui/empty-state.tsx`: shared empty-state block for sections without data.
 
 ## Helios Client Library
 
@@ -97,6 +103,7 @@ Shared types and pure helpers live here. These files can be used by both client 
 - `checks.ts`: creates QA checks from run results.
 - `performance.ts`: page load metric status and formatting helpers.
 - `format.ts`: timestamp, label, and duration formatting.
+- `routes.ts`: shared app route helpers for dashboard and run detail links.
 - `validators.ts`: URL validation helpers.
 - `errors.ts`: client-facing API error message helpers.
 - `overview-cards.ts`: dashboard overview card data.

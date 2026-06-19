@@ -37,6 +37,8 @@ Helios is not AI-first at this stage. The first core is a stable dashboard and a
 - TypeScript
 - Tailwind CSS
 - Playwright
+- Prisma
+- PostgreSQL
 
 ## Project Structure
 
@@ -48,7 +50,7 @@ src/lib/helios/
 
 src/components/helios/
   Dashboard UI components for forms, run metadata, artifacts, evidence,
-  checks, browser trail, status badges, and recent runs.
+  checks, browser trail, status badges, tabs, empty states, and recent runs.
 ```
 
 More detail:
@@ -94,7 +96,9 @@ Completed:
 - Completed and failed runs persisted to database
 - `GET /api/runs` for recent run history from database
 - `GET /api/runs/[id]` for stable run detail payload
+- `DELETE /api/runs` and `DELETE /api/runs/[id]` for run history cleanup
 - `/runs/[id]` detail page with stable URL per run
+- Detail page tabs for overview, evidence, checks, and browser trail
 - Recent runs list sourced from database, localStorage removed
 
 Next:
