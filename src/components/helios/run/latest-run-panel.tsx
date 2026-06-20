@@ -1,17 +1,10 @@
 import Link from "next/link";
-import { StatusBadge } from "@/components/helios/run/status-badge";
-import { OverviewCard } from "@/components/helios/run/overview-card";
-import {
-  getOverviewCardDescription,
-  getOverviewCards,
-} from "@/lib/helios/shared/overview-cards";
+import type { LatestRun } from "@/lib/helios/shared/types";
 import { HELIOS_ROUTES } from "@/lib/helios/shared/routes";
 
-import type { LatestRun } from "@/lib/helios/shared/types";
-import { RunChecksList } from "@/components/helios/run/run-checks-list";
-import { BrowserTrail } from "@/components/helios/run/browser-trail";
-import { RunOverview } from "@/components/helios/run/run-overview";
-import { RunEvidenceList } from "@/components/helios/evidence/run-evidence-list";
+import { RunSummaryCard } from "./run-summary-card";
+import { RunMetricsGrid } from "./run-metrics-grid";
+import { StatusBadge } from "@/components/helios/run/status-badge";
 import { downloadRunJson } from "@/lib/helios/client/export";
 
 type LatestRunPanelProps = {
@@ -20,7 +13,6 @@ type LatestRunPanelProps = {
 };
 
 export function LatestRunPanel({ latestRun, onReset }: LatestRunPanelProps) {
-  const overviewCards = getOverviewCards(latestRun);
   const canExport =
     latestRun?.status === "Completed" || latestRun?.status === "Failed";
 
@@ -63,9 +55,12 @@ export function LatestRunPanel({ latestRun, onReset }: LatestRunPanelProps) {
         </div>
       </header>
 
-      <div className="mt-4 text-sm text-muted">
+      <div className="mt-6">
         {latestRun ? (
-          <RunOverview run={latestRun} />
+          <div className="space-y-6">
+            <RunSummaryCard summary={latestRun.summary} />
+            <RunMetricsGrid run={latestRun} />
+          </div>
         ) : (
           <div className="rounded-md border border-dashed border-border bg-card p-4">
             <p className="text-sm font-medium text-foreground">
@@ -77,26 +72,6 @@ export function LatestRunPanel({ latestRun, onReset }: LatestRunPanelProps) {
           </div>
         )}
       </div>
-
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {overviewCards.map((card) => (
-          <OverviewCard
-            key={card.title}
-            title={card.title}
-            description={getOverviewCardDescription(latestRun, card)}
-          />
-        ))}
-      </div>
-      {latestRun ? (
-        <RunEvidenceList
-          brokenImages={latestRun.brokenImages}
-          consoleErrors={latestRun.consoleErrors}
-          failedRequests={latestRun.failedRequests}
-        />
-      ) : null}
-
-      {latestRun ? <RunChecksList checks={latestRun.checks} /> : null}
-      {latestRun ? <BrowserTrail trail={latestRun.trail} /> : null}
     </section>
   );
 }

@@ -20,7 +20,7 @@ export function Tabs({ tabs }: TabsProps) {
     <div>
       <div
         role="tablist"
-        className="flex w-full items-center gap-4 border-b border-border mb-6"
+        className="flex w-full items-center gap-4 border-b border-border mb-6 overflow-x-auto scrollbar-none"
       >
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
@@ -33,7 +33,7 @@ export function Tabs({ tabs }: TabsProps) {
               aria-controls={`panel-${tab.id}`}
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`pb-3 text-sm font-medium transition-colors border-b-2 -mb-px ${isActive ? "border-foreground text-foreground" : "border-transparent text-muted hover:text-foreground"}`}
+              className={`whitespace-nowrap pb-3 text-sm font-medium transition-colors border-b-2 -mb-px ${isActive ? "border-foreground text-foreground" : "border-transparent text-muted hover:text-foreground"}`}
             >
               {tab.label}
             </button>
