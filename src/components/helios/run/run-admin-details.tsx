@@ -7,7 +7,7 @@ type RunAdminDetailsProps = {
 
 export function RunAdminDetails({ run }: RunAdminDetailsProps) {
   return (
-    <div className="mt-8 pt-6 border-t border-border">
+    <div className="pt-6 border-t border-border">
       <h3 className="text-sm font-semibold text-foreground mb-4">
         Administrative details
       </h3>

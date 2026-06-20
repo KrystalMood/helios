@@ -1,15 +1,15 @@
 import type { LatestRun } from "@/lib/helios/shared/types";
 import Image from "next/image";
 
-type ArtifactViewerProps = {
+type ScreenshotGalleryProps = {
   artifacts: LatestRun["artifacts"];
 };
 
-export function ScreenshotGallery({ artifacts }: ArtifactViewerProps) {
+export function ScreenshotGallery({ artifacts }: ScreenshotGalleryProps) {
   if (!artifacts) return null;
 
   return (
-    <div className="mt-8 border-t border-border pt-6">
+    <div className="border-t border-border pt-6">
       <h3 className="mb-4 text-sm font-medium text-foreground">Screenshots</h3>
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="flex flex-col gap-2">
