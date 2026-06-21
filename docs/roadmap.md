@@ -71,6 +71,9 @@ Implementation checklist:
 - [x] Replace localStorage recent runs with database-backed history
 - [x] Add run detail tabs for overview, evidence, checks, and browser trail
 - [x] Add empty states for checks, evidence, and trail sections
+- [x] Add route-level loading, error, and not-found states for run details
+- [x] Add responsive screenshot inspection with a lightbox preview
+- [x] Polish history actions with confirmation, loading, and error feedback
 
 Definition of done:
 

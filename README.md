@@ -30,6 +30,8 @@ Helios is not AI-first at this stage. The first core is a stable dashboard and a
 - Preview artifacts and export run results as JSON
 - Database-backed run history with stable run detail URLs
 - Evidence interactions: show all, copy item, and copy all
+- Screenshot lightbox with keyboard close support
+- Run detail loading, error, and not-found states
 
 ## Tech Stack
 
@@ -100,6 +102,8 @@ Completed:
 - `/runs/[id]` detail page with stable URL per run
 - Detail page tabs for overview, evidence, checks, and browser trail
 - Recent runs list sourced from database, localStorage removed
+- Responsive, scannable recent run history with clear/delete action feedback
+- Screenshot lightbox and route-level loading, error, and not-found states
 
 Next:
 

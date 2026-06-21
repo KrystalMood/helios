@@ -8,12 +8,16 @@ This document explains the main folders used by Helios and what belongs in each 
 src/app/
   page.tsx
   runs/[id]/page.tsx
+  runs/[id]/loading.tsx
+  runs/[id]/error.tsx
+  runs/[id]/not-found.tsx
   api/runs/route.ts
   api/runs/[id]/route.ts
 ```
 
 - `src/app/page.tsx` renders the main Helios dashboard.
 - `src/app/runs/[id]/page.tsx` renders the run detail page for a stable run URL.
+- `src/app/runs/[id]/loading.tsx`, `error.tsx`, and `not-found.tsx` provide route-level loading, failure, and missing-run states.
 - `src/app/api/runs/route.ts` handles run creation (`POST`) and recent run history (`GET`).
 - `src/app/api/runs/[id]/route.ts` returns a single run's full payload by ID.
 
@@ -33,7 +37,7 @@ UI components for the dashboard live here. These components render forms, latest
 Component groups:
 
 - `layout/`: app shell and dashboard introduction.
-- `run/`: run form, latest run panel, metadata, checks, timeline, overview cards, and status badge.
+- `run/`: run form, latest run panel, overview, screenshots, checks, timeline, and status badge.
 - `evidence/`: artifact viewer, evidence list, grouped evidence sections, and copyable evidence items.
 - `history/`: recent run history preview.
 - `ui/`: small reusable UI primitives shared by Helios components.
@@ -45,8 +49,11 @@ Important components:
 - `run/run-form.tsx`: URL input and submit state.
 - `run/latest-run-panel.tsx`: main result panel for the selected/latest run.
 - `run/summary-header.tsx`: run detail header with status, export, timing, and navigation.
-- `run/run-metadata.tsx`: run metadata, timing, and page metadata.
-- `run/screenshot-gallery.tsx`: static screenshot gallery used by the run detail overview.
+- `run/run-overview.tsx`: composes the summary, metrics, screenshots, and administrative details for a run.
+- `run/run-summary-card.tsx`: prominent run summary panel.
+- `run/run-metrics-grid.tsx`: compact duration, load, console, and network metrics.
+- `run/run-admin-details.tsx`: secondary run identifiers and page metadata.
+- `run/screenshot-gallery.tsx`: interactive screenshot gallery with a lightbox preview.
 - `run/export-run-button.tsx`: client-side button for exporting a run as JSON.
 - `run/run-checks-list.tsx`: QA check result list.
 - `run/browser-trail.tsx`: run timeline.
@@ -54,7 +61,7 @@ Important components:
 - `evidence/run-evidence-list.tsx`: evidence groups and evidence-level actions.
 - `evidence/evidence-section.tsx`: reusable grouped evidence section.
 - `evidence/evidence-item.tsx`: reusable evidence item with copy action.
-- `history/recent-runs-list.tsx`: recent run history preview.
+- `history/recent-runs-list.tsx`: responsive recent run history with clear and individual delete actions.
 - `ui/tabs.tsx`: tabbed section layout used by run detail pages.
 - `ui/empty-state.tsx`: shared empty-state block for sections without data.
 

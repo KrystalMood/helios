@@ -31,6 +31,8 @@ export function RecentRunsList({
   const [deletingInProgress, setDeletingInProgress] = useState<string | null>(
     null,
   );
+  const [isClearing, setIsClearing] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   if (runs.length <= 0) return null;
 
@@ -39,24 +41,35 @@ export function RecentRunsList({
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-base font-medium text-foreground">Recent runs</h2>
         {confirming ? (
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <span className="text-xs text-muted">Clear all runs?</span>
             <button
               type="button"
               onClick={async () => {
+                setActionError(null);
+                setIsClearing(true);
                 try {
                   await onClearRuns();
                   setConfirming(false);
-                } catch {}
+                } catch {
+                  setActionError("Failed to clear history. Please try again.");
+                } finally {
+                  setIsClearing(false);
+                }
               }}
-              className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
+              disabled={isClearing}
+              className="rounded-full bg-danger/10 px-3 py-1 text-xs font-medium text-danger transition hover:bg-danger hover:text-background disabled:opacity-50"
             >
-              Yes, clear
+              {isClearing ? "Clearing..." : "Yes, clear"}
             </button>
             <button
               type="button"
-              onClick={() => setConfirming(false)}
-              className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
+              onClick={() => {
+                setConfirming(false);
+                setActionError(null);
+              }}
+              disabled={isClearing}
+              className="rounded-full border border-border px-3 py-1 text-xs text-muted transition hover:text-foreground disabled:opacity-50"
             >
               Cancel
             </button>
@@ -64,13 +77,25 @@ export function RecentRunsList({
         ) : (
           <button
             type="button"
-            onClick={() => setConfirming(true)}
-            className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
+            onClick={() => {
+              setConfirming(true);
+              setActionError(null);
+            }}
+            className="rounded-full border border-border px-3 py-1 text-xs text-muted transition hover:text-foreground"
           >
-            Clear
+            Clear History
           </button>
         )}
       </div>
+
+      {actionError && (
+        <div
+          role="alert"
+          className="mb-4 rounded-md bg-danger/10 px-3 py-2 text-sm text-danger border border-danger/20"
+        >
+          {actionError}
+        </div>
+      )}
 
       <ul className="flex flex-col border-t border-border mt-4">
         {runs.map((run) => (
@@ -117,10 +142,15 @@ export function RecentRunsList({
                   <button
                     type="button"
                     onClick={async () => {
+                      setActionError(null);
                       setDeletingInProgress(run.id);
                       try {
                         await onDeleteRun(run.id);
                         setDeletingId(null);
+                      } catch {
+                        setActionError(
+                          "Failed to delete run. Please try again.",
+                        );
                       } finally {
                         setDeletingInProgress(null);
                       }
@@ -128,12 +158,13 @@ export function RecentRunsList({
                     disabled={deletingInProgress === run.id}
                     className="rounded-md bg-danger/10 px-2 py-1 text-xs font-medium text-danger transition hover:bg-danger hover:text-background disabled:opacity-50"
                   >
-                    Delete
+                    {deletingInProgress === run.id ? "Deleting..." : "Delete"}
                   </button>
                   <button
                     type="button"
                     onClick={() => {
                       setDeletingId(null);
+                      setActionError(null);
                     }}
                     className="rounded-md px-2 py-1 text-xs text-muted transition hover:bg-muted hover:text-foreground disabled:opacity-50"
                     disabled={deletingInProgress === run.id}
@@ -146,6 +177,7 @@ export function RecentRunsList({
                   type="button"
                   onClick={() => {
                     setDeletingId(run.id);
+                    setActionError(null);
                   }}
                   className="rounded-md p-1.5 text-muted opacity-100 transition hover:bg-danger/10 hover:text-danger sm:opacity-0 focus:opacity-100 sm:group-hover:opacity-100"
                   aria-label="Delete run"
