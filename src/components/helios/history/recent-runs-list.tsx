@@ -1,16 +1,25 @@
 import { useState } from "react";
+import Link from "next/link";
 import type { LatestRun } from "@/lib/helios/shared/types";
 import { HELIOS_ROUTES } from "@/lib/helios/shared/routes";
+import { Trash2 } from "lucide-react";
 
 import { formatDurationMs, formatTimestamp } from "@/lib/helios/shared/format";
 import { StatusBadge } from "@/components/helios/run/status-badge";
-import Link from "next/link";
 
 type RecentRunsListProps = {
   runs: LatestRun[];
   onClearRuns: () => Promise<void>;
   onDeleteRun: (id: string) => Promise<void>;
 };
+
+function getDomain(urlStr: string) {
+  try {
+    return new URL(urlStr).hostname;
+  } catch {
+    return urlStr;
+  }
+}
 
 export function RecentRunsList({
   runs,
@@ -63,77 +72,87 @@ export function RecentRunsList({
         )}
       </div>
 
-      <ul className="mt-4 space-y-3">
+      <ul className="flex flex-col border-t border-border mt-4">
         {runs.map((run) => (
           <li
             key={run.id}
-            className="rounded-md border border-border bg-card p-3 text-sm"
+            className="group relative border-b border-border transition-colors hover:bg-muted/30"
           >
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="text-foreground break-all">
-                  {run.title ?? run.startingUrl}
+            <Link
+              href={HELIOS_ROUTES.runDetail(run.id)}
+              className={`flex min-w-0 flex-col gap-3 p-3 transition-[padding] sm:flex-row sm:items-center ${
+                deletingId === run.id
+                  ? "pr-32 sm:pr-32"
+                  : "pr-12 sm:pr-3 sm:group-hover:pr-12 sm:group-focus-within:pr-12"
+              }`}
+            >
+              <div className="shrink-0">
+                <StatusBadge status={run.status} />
+              </div>
+
+              <div className="flex min-w-0 flex-1 flex-col justify-center">
+                <p className="truncate text-sm font-medium text-foreground">
+                  {run.title || getDomain(run.startingUrl)}
                 </p>
-                {run.title ? (
-                  <p className="mt-0.5 text-xs text-muted break-all">
-                    {run.startingUrl}
-                  </p>
-                ) : null}
-                <p className="mt-1 text-xs text-muted">
-                  {formatTimestamp(run.createdAt)}
-                  {run.durationMs !== undefined
-                    ? ` - ${formatDurationMs(run.durationMs)}`
-                    : ""}
+                <p className="truncate text-xs text-muted">
+                  {run.title ? getDomain(run.startingUrl) : run.startingUrl}
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
-                <StatusBadge status={run.status} />
-                <Link
-                  href={HELIOS_ROUTES.runDetail(run.id)}
-                  className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
-                >
-                  View
-                </Link>
-                {deletingId === run.id ? (
-                  <div className="flex items-center gap-1">
-                    <span className="text-xs text-muted">Delete?</span>
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        setDeletingInProgress(run.id);
+              <div className="flex shrink-0 items-center gap-3 text-right sm:flex-col sm:items-end sm:gap-0.5">
+                <span className="text-xs text-foreground">
+                  {formatTimestamp(run.createdAt)}
+                </span>
+                {run.durationMs !== undefined && (
+                  <span className="text-xs text-muted">
+                    {formatDurationMs(run.durationMs)}
+                  </span>
+                )}
+              </div>
+            </Link>
 
-                        try {
-                          await onDeleteRun(run.id);
-                          setDeletingId(null);
-                        } finally {
-                          setDeletingInProgress(null);
-                        }
-                      }}
-                      disabled={deletingInProgress === run.id}
-                      className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Yes
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDeletingId(null)}
-                      className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
-                      disabled={deletingInProgress === run.id}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+              {deletingId === run.id ? (
+                <div className="flex items-center gap-1">
                   <button
                     type="button"
-                    onClick={() => setDeletingId(run.id)}
-                    className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
+                    onClick={async () => {
+                      setDeletingInProgress(run.id);
+                      try {
+                        await onDeleteRun(run.id);
+                        setDeletingId(null);
+                      } finally {
+                        setDeletingInProgress(null);
+                      }
+                    }}
+                    disabled={deletingInProgress === run.id}
+                    className="rounded-md bg-danger/10 px-2 py-1 text-xs font-medium text-danger transition hover:bg-danger hover:text-background disabled:opacity-50"
                   >
                     Delete
                   </button>
-                )}
-              </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDeletingId(null);
+                    }}
+                    className="rounded-md px-2 py-1 text-xs text-muted transition hover:bg-muted hover:text-foreground disabled:opacity-50"
+                    disabled={deletingInProgress === run.id}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDeletingId(run.id);
+                  }}
+                  className="rounded-md p-1.5 text-muted opacity-100 transition hover:bg-danger/10 hover:text-danger sm:opacity-0 focus:opacity-100 sm:group-hover:opacity-100"
+                  aria-label="Delete run"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              )}
             </div>
           </li>
         ))}
