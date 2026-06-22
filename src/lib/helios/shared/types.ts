@@ -74,3 +74,13 @@ export type OverviewCardData = {
   activeText: string;
   completedText: string;
 };
+
+export type EvidenceType = "image" | "console" | "network";
+
+export type RunEvidence = {
+  id: string;
+  type: EvidenceType;
+  content: string;
+  sourceUrl?: string;
+  capturedAt: string;
+};

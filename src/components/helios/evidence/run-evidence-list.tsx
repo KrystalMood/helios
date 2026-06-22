@@ -4,11 +4,17 @@ import {
   COPY_FEEDBACK_TIMEOUT_MS,
   MAX_VISIBLE_EVIDENCE_ITEMS,
 } from "@/lib/helios/shared/constants";
+import type { RunEvidence } from "@/lib/helios/shared/types";
 
 import { EvidenceSection } from "@/components/helios/evidence/evidence-section";
 import { EmptyState } from "../ui/empty-state";
+import { transformRawEvidence } from "@/lib/helios/shared/evidence-transformer";
+import { EvidenceDetailModal } from "@/components/helios/evidence/evidence-detail-modal";
 
 type RunEvidenceListProps = {
+  runId: string;
+  capturedAt: string;
+  pageUrl: string;
   brokenImages?: string[];
   consoleErrors?: string[];
   failedRequests?: string[];
@@ -16,30 +22,10 @@ type RunEvidenceListProps = {
 
 type FilterType = "all" | "images" | "console" | "network";
 
-function formatEvidenceGroup(title: string, items: string[] = []) {
-  if (items.length === 0) return "";
-
-  return [
-    `${title} (${items.length})`,
-    ...items.map((item) => `- ${item}`),
-  ].join("\n");
-}
-
-function formatEvidenceForClipboard({
-  brokenImages,
-  consoleErrors,
-  failedRequests,
-}: RunEvidenceListProps) {
-  return [
-    formatEvidenceGroup("Broken images", brokenImages),
-    formatEvidenceGroup("Console errors", consoleErrors),
-    formatEvidenceGroup("Failed network requests", failedRequests),
-  ]
-    .filter(Boolean)
-    .join("\n\n");
-}
-
 export function RunEvidenceList({
+  runId,
+  capturedAt,
+  pageUrl,
   brokenImages,
   consoleErrors,
   failedRequests,
@@ -48,6 +34,9 @@ export function RunEvidenceList({
   const [copiedEvidence, setCopiedEvidence] = useState<string | null>(null);
   const [hasCopiedAllEvidence, setHasCopiedAllEvidence] = useState(false);
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  const [selectedEvidence, setSelectedEvidence] = useState<RunEvidence | null>(
+    null,
+  );
 
   const handleFilterChange = (filter: FilterType) => {
     setActiveFilter(filter);
@@ -82,73 +71,78 @@ export function RunEvidenceList({
     }, COPY_FEEDBACK_TIMEOUT_MS);
   };
 
-  const handleCopyAllEvidence = async () => {
-    const evidenceText = formatEvidenceForClipboard({
-      brokenImages:
-        activeFilter === "all" || activeFilter === "images"
-          ? brokenImages?.slice(0, maxVisibleItems)
-          : undefined,
-      consoleErrors:
-        activeFilter === "all" || activeFilter === "console"
-          ? consoleErrors?.slice(0, maxVisibleItems)
-          : undefined,
-      failedRequests:
-        activeFilter === "all" || activeFilter === "network"
-          ? failedRequests?.slice(0, maxVisibleItems)
-          : undefined,
-    });
-
-    await navigator.clipboard.writeText(evidenceText);
-    setHasCopiedAllEvidence(true);
-
-    window.setTimeout(() => {
-      setHasCopiedAllEvidence(false);
-    }, COPY_FEEDBACK_TIMEOUT_MS);
-  };
-
   const totalEvidenceCount =
     brokenImagesCount + consoleErrorCount + failedRequestCount;
 
-  const sectionConfigs = useMemo(
-    () => [
+  const sectionConfigs = useMemo(() => {
+    const allEvidence = transformRawEvidence({
+      runId,
+      capturedAt,
+      pageUrl,
+      brokenImages,
+      consoleErrors,
+      failedRequests,
+    });
+
+    return [
       {
         id: "images" as const,
         title: "Broken images",
-        items: brokenImages?.slice(0, maxVisibleItems) ?? [],
+        items: allEvidence
+          .filter((e) => e.type === "image")
+          .slice(0, maxVisibleItems),
         totalCount: brokenImagesCount,
-        itemKeyPrefix: "image",
         emptyTitle: "No broken images",
         emptyDesc: "No broken images were detected in this run.",
       },
       {
         id: "console" as const,
         title: "Console errors",
-        items: consoleErrors?.slice(0, maxVisibleItems) ?? [],
+        items: allEvidence
+          .filter((e) => e.type === "console")
+          .slice(0, maxVisibleItems),
         totalCount: consoleErrorCount,
-        itemKeyPrefix: "console",
         emptyTitle: "No console errors",
         emptyDesc: "No console errors were logged in this run.",
       },
       {
         id: "network" as const,
         title: "Failed network requests",
-        items: failedRequests?.slice(0, maxVisibleItems) ?? [],
+        items: allEvidence
+          .filter((e) => e.type === "network")
+          .slice(0, maxVisibleItems),
         totalCount: failedRequestCount,
-        itemKeyPrefix: "request",
         emptyTitle: "No failed requests",
         emptyDesc: "No network requests failed in this run.",
       },
-    ],
-    [
-      brokenImages,
-      consoleErrors,
-      failedRequests,
-      maxVisibleItems,
-      brokenImagesCount,
-      consoleErrorCount,
-      failedRequestCount,
-    ],
-  );
+    ];
+  }, [
+    runId,
+    capturedAt,
+    pageUrl,
+    brokenImages,
+    consoleErrors,
+    failedRequests,
+    maxVisibleItems,
+    brokenImagesCount,
+    consoleErrorCount,
+    failedRequestCount,
+  ]);
+
+  const handleCopyAllEvidence = async () => {
+    const visibleText = sectionConfigs
+      .filter((s) => activeFilter === "all" || activeFilter === s.id)
+      .flatMap((s) => s.items)
+      .map((e) => `- ${e.content}`)
+      .join("\n");
+
+    await navigator.clipboard.writeText(visibleText);
+    setHasCopiedAllEvidence(true);
+
+    window.setTimeout(() => {
+      setHasCopiedAllEvidence(false);
+    }, COPY_FEEDBACK_TIMEOUT_MS);
+  };
 
   if (totalEvidenceCount === 0) {
     return (
@@ -246,11 +240,18 @@ export function RunEvidenceList({
               totalCount={section.totalCount}
               copiedEvidence={copiedEvidence}
               onCopyEvidence={handleCopyEvidence}
-              itemKeyPrefix={section.itemKeyPrefix}
+              onSelectEvidence={setSelectedEvidence}
             />
           );
         })}
       </div>
+
+      {selectedEvidence && (
+        <EvidenceDetailModal
+          evidence={selectedEvidence}
+          onClose={() => setSelectedEvidence(null)}
+        />
+      )}
     </div>
   );
 }

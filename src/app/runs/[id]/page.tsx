@@ -63,6 +63,9 @@ export default async function RunDetailPage({
       label: "Evidence",
       content: (
         <RunEvidenceList
+          runId={run.id}
+          capturedAt={run.finishedAt ?? run.createdAt}
+          pageUrl={run.finalUrl ?? run.startingUrl}
           brokenImages={run.brokenImages}
           consoleErrors={run.consoleErrors}
           failedRequests={run.failedRequests}
