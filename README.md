@@ -31,6 +31,7 @@ Helios is not AI-first at this stage. The first core is a stable dashboard and a
 - Database-backed run history with stable run detail URLs
 - Evidence interactions: show all, copy item, and copy all
 - Filterable evidence with structured detail inspection
+- QA checks that link directly to their supporting evidence category
 - Screenshot lightbox with keyboard close support
 - Run detail loading, error, and not-found states
 
@@ -106,6 +107,7 @@ Completed:
 - Responsive, scannable recent run history with clear/delete action feedback
 - Screenshot lightbox and route-level loading, error, and not-found states
 - Evidence filters, structured evidence view models, and detail inspection modal
+- QA checks can navigate directly to their relevant evidence filter
 
 Next:
 

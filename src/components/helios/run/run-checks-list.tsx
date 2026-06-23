@@ -1,9 +1,16 @@
-import type { CheckResult, CheckStatus } from "@/lib/helios/shared/types";
+"use client";
+
+import type {
+  CheckResult,
+  CheckStatus,
+  EvidenceType,
+} from "@/lib/helios/shared/types";
 import { formatLabel } from "@/lib/helios/shared/format";
 import { EmptyState } from "../ui/empty-state";
 
 type RunChecksListProps = {
   checks: CheckResult[];
+  onViewEvidence?: (evidenceType: EvidenceType) => void;
 };
 
 const checkStatusClasses: Record<CheckStatus, string> = {
@@ -12,7 +19,7 @@ const checkStatusClasses: Record<CheckStatus, string> = {
   failed: "border-danger text-danger",
 };
 
-export function RunChecksList({ checks }: RunChecksListProps) {
+export function RunChecksList({ checks, onViewEvidence }: RunChecksListProps) {
   if (checks.length === 0) {
     return (
       <EmptyState
@@ -40,10 +47,19 @@ export function RunChecksList({ checks }: RunChecksListProps) {
                     checkStatusClasses[check.status]
                   }
                 >
-                  {formatLabel(check.status)} · {formatLabel(check.severity)}
+                  {formatLabel(check.status)} - {formatLabel(check.severity)}
                 </span>
               </div>
               <p className="text-muted">{check.detail}</p>
+              {check.evidenceType && onViewEvidence ? (
+                <button
+                  type="button"
+                  onClick={() => onViewEvidence(check.evidenceType!)}
+                  className="mt-2 text-xs font-medium text-accent transition hover:underline"
+                >
+                  View evidence
+                </button>
+              ) : null}
             </li>
           ))}
         </ul>

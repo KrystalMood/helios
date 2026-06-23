@@ -10,6 +10,8 @@ export function createChecksFromRunResult(
   const hasDescription =
     result.description !== undefined && result.description.trim().length > 0;
   const hasBrokenImages = result.brokenImages.length > 0;
+  const hasConsoleErrors = result.consoleErrors.length > 0;
+  const hasFailedRequests = result.failedRequests.length > 0;
   const domLoadStatus = result.loadMetrics
     ? getDomLoadStatus(result.loadMetrics.domContentLoadedMs)
     : undefined;
@@ -67,24 +69,25 @@ export function createChecksFromRunResult(
         : "No broken images were found.",
       status: hasBrokenImages ? "warning" : "passed",
       severity: hasBrokenImages ? "medium" : "info",
+      evidenceType: hasBrokenImages ? "image" : undefined,
     },
     {
       title: "Console errors checked",
-      detail:
-        result.consoleErrors.length > 0
-          ? `${result.consoleErrors.length} console error(s) captured.`
-          : "No console errors were captured.",
-      status: result.consoleErrors.length > 0 ? "warning" : "passed",
-      severity: result.consoleErrors.length > 0 ? "low" : "info",
+      detail: hasConsoleErrors
+        ? `${result.consoleErrors.length} console error(s) captured.`
+        : "No console errors were captured.",
+      status: hasConsoleErrors ? "warning" : "passed",
+      severity: hasConsoleErrors ? "low" : "info",
+      evidenceType: hasConsoleErrors ? "console" : undefined,
     },
     {
       title: "Failed network requests checked",
-      detail:
-        result.failedRequests.length > 0
-          ? `${result.failedRequests.length} failed request(s) captured.`
-          : "No failed network requests were captured.",
-      status: result.failedRequests.length > 0 ? "warning" : "passed",
-      severity: result.failedRequests.length > 0 ? "medium" : "info",
+      detail: hasFailedRequests
+        ? `${result.failedRequests.length} failed request(s) captured.`
+        : "No failed network requests were captured.",
+      status: hasFailedRequests ? "warning" : "passed",
+      severity: hasFailedRequests ? "medium" : "info",
+      evidenceType: hasFailedRequests ? "network" : undefined,
     },
   ];
 }

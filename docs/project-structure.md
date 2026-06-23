@@ -50,12 +50,13 @@ Important components:
 - `run/latest-run-panel.tsx`: main result panel for the selected/latest run.
 - `run/summary-header.tsx`: run detail header with status, export, timing, and navigation.
 - `run/run-overview.tsx`: composes the summary, metrics, screenshots, and administrative details for a run.
+- `run/run-detail-tabs.tsx`: client-side coordinator for detail tabs and check-to-evidence navigation.
 - `run/run-summary-card.tsx`: prominent run summary panel.
 - `run/run-metrics-grid.tsx`: compact duration, load, console, and network metrics.
 - `run/run-admin-details.tsx`: secondary run identifiers and page metadata.
 - `run/screenshot-gallery.tsx`: interactive screenshot gallery with a lightbox preview.
 - `run/export-run-button.tsx`: client-side button for exporting a run as JSON.
-- `run/run-checks-list.tsx`: QA check result list.
+- `run/run-checks-list.tsx`: QA check result list with optional evidence navigation actions.
 - `run/browser-trail.tsx`: run timeline.
 - `evidence/artifact-viewer.tsx`: desktop/mobile screenshot preview and modal view.
 - `evidence/run-evidence-list.tsx`: evidence filters, grouped evidence rendering, and selection state.
@@ -63,7 +64,7 @@ Important components:
 - `evidence/evidence-item.tsx`: selectable evidence item with copy and detail affordances.
 - `evidence/evidence-detail-modal.tsx`: modal for inspecting structured evidence content and metadata.
 - `history/recent-runs-list.tsx`: responsive recent run history with clear and individual delete actions.
-- `ui/tabs.tsx`: tabbed section layout used by run detail pages.
+- `ui/tabs.tsx`: controlled or uncontrolled tabbed section layout used by run detail pages.
 - `ui/empty-state.tsx`: shared empty-state block for sections without data.
 
 ## Helios Client Library
@@ -106,7 +107,7 @@ src/lib/helios/shared/
 
 Shared types and pure helpers live here. These files can be used by both client and server code.
 
-- `types.ts`: core run, check, trail, metric, and response types.
+- `types.ts`: core run, check, trail, metric, evidence, and response types.
 - `constants.ts`: shared limits, timeouts, storage keys, and thresholds.
 - `checks.ts`: creates QA checks from run results.
 - `performance.ts`: page load metric status and formatting helpers.

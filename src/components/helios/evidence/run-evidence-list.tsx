@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   COPY_FEEDBACK_TIMEOUT_MS,
   MAX_VISIBLE_EVIDENCE_ITEMS,
@@ -11,6 +11,8 @@ import { EmptyState } from "../ui/empty-state";
 import { transformRawEvidence } from "@/lib/helios/shared/evidence-transformer";
 import { EvidenceDetailModal } from "@/components/helios/evidence/evidence-detail-modal";
 
+export type EvidenceFilter = "all" | "images" | "console" | "network";
+
 type RunEvidenceListProps = {
   runId: string;
   capturedAt: string;
@@ -18,9 +20,9 @@ type RunEvidenceListProps = {
   brokenImages?: string[];
   consoleErrors?: string[];
   failedRequests?: string[];
+  activeFilter?: EvidenceFilter;
+  onFilterChange?: (filter: EvidenceFilter) => void;
 };
-
-type FilterType = "all" | "images" | "console" | "network";
 
 export function RunEvidenceList({
   runId,
@@ -29,17 +31,33 @@ export function RunEvidenceList({
   brokenImages,
   consoleErrors,
   failedRequests,
+  activeFilter: controlledActiveFilter,
+  onFilterChange,
 }: RunEvidenceListProps) {
   const [showAllEvidence, setShowAllEvidence] = useState(false);
   const [copiedEvidence, setCopiedEvidence] = useState<string | null>(null);
   const [hasCopiedAllEvidence, setHasCopiedAllEvidence] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  const [uncontrolledActiveFilter, setUncontrolledActiveFilter] =
+    useState<EvidenceFilter>("all");
   const [selectedEvidence, setSelectedEvidence] = useState<RunEvidence | null>(
     null,
   );
 
-  const handleFilterChange = (filter: FilterType) => {
-    setActiveFilter(filter);
+  const activeFilter = controlledActiveFilter ?? uncontrolledActiveFilter;
+
+  useEffect(() => {
+    if (controlledActiveFilter === undefined) return;
+
+    setShowAllEvidence(false);
+    setHasCopiedAllEvidence(false);
+  }, [controlledActiveFilter]);
+
+  const handleFilterChange = (filter: EvidenceFilter) => {
+    if (controlledActiveFilter === undefined) {
+      setUncontrolledActiveFilter(filter);
+    }
+
+    onFilterChange?.(filter);
     setShowAllEvidence(false);
     setHasCopiedAllEvidence(false);
   };
@@ -161,7 +179,7 @@ export function RunEvidenceList({
   }
 
   const filters: {
-    id: FilterType;
+    id: EvidenceFilter;
     label: string;
     count: number;
   }[] = [

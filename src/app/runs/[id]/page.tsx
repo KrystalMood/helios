@@ -4,14 +4,9 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 
 import { AppHeader } from "@/components/helios/layout/app-header";
-import { RunEvidenceList } from "@/components/helios/evidence/run-evidence-list";
-import { RunChecksList } from "@/components/helios/run/run-checks-list";
-import { BrowserTrail } from "@/components/helios/run/browser-trail";
 import { RunSummaryHeader } from "@/components/helios/run/summary-header";
-import { Tabs, type TabItem } from "@/components/helios/ui/tabs";
-
 import { runRecordToLatestRun } from "@/lib/helios/server/run-record";
-import { RunOverview } from "@/components/helios/run/run-overview";
+import { RunDetailTabs } from "@/components/helios/run/run-detail-tabs";
 
 const getRunById = cache(async (id: string) => {
   return prisma.run.findUnique({ where: { id } });
@@ -52,45 +47,13 @@ export default async function RunDetailPage({
 
   const run = runRecordToLatestRun(record);
 
-  const tabsData: TabItem[] = [
-    {
-      id: "overview",
-      label: "Overview",
-      content: <RunOverview run={run} />,
-    },
-    {
-      id: "evidence",
-      label: "Evidence",
-      content: (
-        <RunEvidenceList
-          runId={run.id}
-          capturedAt={run.finishedAt ?? run.createdAt}
-          pageUrl={run.finalUrl ?? run.startingUrl}
-          brokenImages={run.brokenImages}
-          consoleErrors={run.consoleErrors}
-          failedRequests={run.failedRequests}
-        />
-      ),
-    },
-    {
-      id: "checks",
-      label: "QA Checks",
-      content: <RunChecksList checks={run.checks} />,
-    },
-    {
-      id: "trail",
-      label: "Browser Trail",
-      content: <BrowserTrail trail={run.trail} />,
-    },
-  ];
-
   return (
     <main className="min-h-screen bg-background text-foreground">
       <AppHeader />
       <div className="py-10 px-6 mx-auto max-w-5xl">
         <RunSummaryHeader run={run} />
         <div className="rounded-lg border border-border bg-panel p-5">
-          <Tabs tabs={tabsData} />
+          <RunDetailTabs run={run} />
         </div>
       </div>
     </main>

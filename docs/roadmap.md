@@ -94,6 +94,7 @@ Completed:
 - Structured UI evidence records derived from persisted run evidence
 - Evidence detail modal with type, timestamp, source URL, raw content, and copy action
 - Keyboard and backdrop close behavior for evidence detail inspection
+- QA checks link to their relevant evidence filter for newly created runs
 
 Next:
 
