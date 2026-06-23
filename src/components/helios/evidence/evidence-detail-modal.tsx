@@ -1,8 +1,9 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { X } from "lucide-react";
+import { COPY_FEEDBACK_TIMEOUT_MS } from "@/lib/helios/shared/constants";
 import type { RunEvidence } from "@/lib/helios/shared/types";
 import { formatTimestamp } from "@/lib/helios/shared/format";
-import { X } from "lucide-react";
 
 type EvidenceDetailModalProps = {
   evidence: RunEvidence;
@@ -19,6 +20,17 @@ export function EvidenceDetailModal({
   evidence,
   onClose,
 }: EvidenceDetailModalProps) {
+  const [hasCopiedContent, setHasCopiedContent] = useState(false);
+
+  const handleCopyContent = async () => {
+    await navigator.clipboard.writeText(evidence.content);
+    setHasCopiedContent(true);
+
+    window.setTimeout(() => {
+      setHasCopiedContent(false);
+    }, COPY_FEEDBACK_TIMEOUT_MS);
+  };
+
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -59,13 +71,23 @@ export function EvidenceDetailModal({
           <X className="h-5 w-5" aria-hidden="true" />
         </button>
 
-        <div className="mt-4 flex items-center gap-3">
-          <span className="rounded-full border border-border px-2 py-1 text-xs text-muted">
-            {evidenceTypeLabels[evidence.type]}
-          </span>
-          <span className="text-xs text-muted">
-            {formatTimestamp(evidence.capturedAt)}
-          </span>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 pr-12">
+          <div className="flex items-center gap-3">
+            <span className="rounded-full border border-border px-2 py-1 text-xs text-muted">
+              {evidenceTypeLabels[evidence.type]}
+            </span>
+            <span className="text-xs text-muted">
+              {formatTimestamp(evidence.capturedAt)}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleCopyContent}
+            className="rounded-full border border-border px-2 py-1 text-xs text-muted transition hover:text-foreground"
+          >
+            {hasCopiedContent ? "Copied!" : "Copy content"}
+          </button>
         </div>
 
         {evidence.sourceUrl && (

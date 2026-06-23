@@ -84,6 +84,23 @@ Definition of done:
 - Run history can be cleared or cleaned up one run at a time.
 - Existing Phase 2 evidence, screenshots, checks, and metadata still render correctly.
 
+## Phase 4: QA Evidence Board
+
+Goal: make each issue easier to inspect through structured, filterable evidence.
+
+Completed:
+
+- Evidence filters for broken images, console errors, and failed network requests
+- Structured UI evidence records derived from persisted run evidence
+- Evidence detail modal with type, timestamp, source URL, raw content, and copy action
+- Keyboard and backdrop close behavior for evidence detail inspection
+
+Next:
+
+- Link checks and findings to their supporting evidence
+- Add evidence status and stronger source metadata when individual evidence is persisted
+- Consider a normalized `Evidence` database model when cross-run evidence querying becomes necessary
+
 ## Later: AI-Assisted QA Reports
 
 Goal: use the evidence layer to generate summaries, triage suggestions, and next actions.

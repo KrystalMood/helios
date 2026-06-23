@@ -38,7 +38,7 @@ Component groups:
 
 - `layout/`: app shell and dashboard introduction.
 - `run/`: run form, latest run panel, overview, screenshots, checks, timeline, and status badge.
-- `evidence/`: artifact viewer, evidence list, grouped evidence sections, and copyable evidence items.
+- `evidence/`: filterable evidence lists, detail inspection, grouped evidence sections, and copy actions.
 - `history/`: recent run history preview.
 - `ui/`: small reusable UI primitives shared by Helios components.
 
@@ -58,9 +58,10 @@ Important components:
 - `run/run-checks-list.tsx`: QA check result list.
 - `run/browser-trail.tsx`: run timeline.
 - `evidence/artifact-viewer.tsx`: desktop/mobile screenshot preview and modal view.
-- `evidence/run-evidence-list.tsx`: evidence groups and evidence-level actions.
+- `evidence/run-evidence-list.tsx`: evidence filters, grouped evidence rendering, and selection state.
 - `evidence/evidence-section.tsx`: reusable grouped evidence section.
-- `evidence/evidence-item.tsx`: reusable evidence item with copy action.
+- `evidence/evidence-item.tsx`: selectable evidence item with copy and detail affordances.
+- `evidence/evidence-detail-modal.tsx`: modal for inspecting structured evidence content and metadata.
 - `history/recent-runs-list.tsx`: responsive recent run history with clear and individual delete actions.
 - `ui/tabs.tsx`: tabbed section layout used by run detail pages.
 - `ui/empty-state.tsx`: shared empty-state block for sections without data.
@@ -113,6 +114,7 @@ Shared types and pure helpers live here. These files can be used by both client 
 - `routes.ts`: shared app route helpers for dashboard and run detail links.
 - `validators.ts`: URL validation helpers.
 - `errors.ts`: client-facing API error message helpers.
+- `evidence-transformer.ts`: transforms persisted raw evidence strings into structured UI evidence records.
 - `overview-cards.ts`: dashboard overview card data.
 ## Database Configuration
 
@@ -126,6 +128,8 @@ Prisma ORM files for database connection and schema configuration.
 
 - `prisma/schema.prisma`: Defines the PostgreSQL connection provider, client generator target (`src/generated/prisma`), and database models (including the `Run` model).
 - `prisma.config.ts`: Configures the schema paths, migration paths, and loads database credentials dynamically via environment variables from `.env`.
+
+Structured `RunEvidence` records are currently derived for the UI from evidence arrays stored on a `Run`. A normalized database `Evidence` model can be added later when evidence needs independent querying or relationships.
 
 ## Public Artifacts
 

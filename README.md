@@ -30,6 +30,7 @@ Helios is not AI-first at this stage. The first core is a stable dashboard and a
 - Preview artifacts and export run results as JSON
 - Database-backed run history with stable run detail URLs
 - Evidence interactions: show all, copy item, and copy all
+- Filterable evidence with structured detail inspection
 - Screenshot lightbox with keyboard close support
 - Run detail loading, error, and not-found states
 
@@ -82,7 +83,7 @@ http://localhost:3000
 
 ## Status
 
-Phase 3 is complete. Helios now uses a real Playwright runner with database-backed run persistence.
+Phase 3 is complete, and Phase 4 evidence-board work is in progress. Helios uses a real Playwright runner with database-backed run persistence.
 
 Completed:
 
@@ -104,7 +105,9 @@ Completed:
 - Recent runs list sourced from database, localStorage removed
 - Responsive, scannable recent run history with clear/delete action feedback
 - Screenshot lightbox and route-level loading, error, and not-found states
+- Evidence filters, structured evidence view models, and detail inspection modal
 
 Next:
 
+- Evidence-to-finding links, evidence statuses, and stronger evidence-board relationships
 - AI-assisted QA reports: summaries, triage suggestions, severity classification, and exportable reports

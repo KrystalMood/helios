@@ -14,6 +14,7 @@ export type CheckResult = {
   detail: string;
   status: CheckStatus;
   severity: CheckSeverity;
+  evidenceType?: EvidenceType;
 };
 
 export type LoadMetrics = {
