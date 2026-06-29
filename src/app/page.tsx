@@ -7,6 +7,7 @@ import { DashboardHero } from "@/components/helios/layout/dashboard-hero";
 import { RunForm } from "@/components/helios/run/run-form";
 import { LatestRunPanel } from "@/components/helios/run/latest-run-panel";
 import { RecentRunsList } from "@/components/helios/history/recent-runs-list";
+import { RecentRunsSkeleton } from "@/components/helios/history/recent-runs-skeleton";
 
 export default function Home() {
   const {
@@ -35,7 +36,7 @@ export default function Home() {
         />
         <LatestRunPanel latestRun={latestRun} onReset={handleReset} />
         {isHistoryLoading ? (
-          <p className="mt-6 text-sm text-muted">Loading recent runs...</p>
+          <RecentRunsSkeleton />
         ) : historyError ? (
           <p className="mt-6 text-sm text-muted">{historyError}</p>
         ) : (
