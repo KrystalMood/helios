@@ -31,6 +31,7 @@ export function RunDetailTabs({ run }: RunDetailTabsProps) {
   const [activeTab, setActiveTab] = useState("overview");
   const [activeEvidenceFilter, setActiveEvidenceFilter] =
     useState<EvidenceFilter>("all");
+  const [scrollTarget, setScrollTarget] = useState<EvidenceFilter | null>(null);
   const findingCount = getFindingsFromChecks(run.checks).length;
   const evidenceCount =
     (run.brokenImages?.length ?? 0) +
@@ -41,8 +42,14 @@ export function RunDetailTabs({ run }: RunDetailTabsProps) {
   const trailCount = run.trail.length;
 
   const handleViewEvidence = (evidenceType: EvidenceType) => {
-    setActiveEvidenceFilter(evidenceFilterByType[evidenceType]);
+    const filter = evidenceFilterByType[evidenceType];
+    setActiveEvidenceFilter(filter);
+    setScrollTarget(filter);
     setActiveTab("evidence");
+  };
+
+  const handleScrollComplete = () => {
+    setScrollTarget(null);
   };
 
   const tabs: TabItem[] = [
@@ -84,6 +91,8 @@ export function RunDetailTabs({ run }: RunDetailTabsProps) {
           failedRequests={run.failedRequests}
           activeFilter={activeEvidenceFilter}
           onFilterChange={(filter) => setActiveEvidenceFilter(filter)}
+          scrollTarget={scrollTarget}
+          onScrollComplete={handleScrollComplete}
         />
       ),
     },

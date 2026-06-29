@@ -50,7 +50,7 @@ Important components:
 - `run/latest-run-panel.tsx`: main result panel for the selected/latest run.
 - `run/summary-header.tsx`: run detail header with status, export, timing, and navigation.
 - `run/run-overview.tsx`: composes the summary, metrics, screenshots, and administrative details for a run.
-- `run/run-detail-tabs.tsx`: client-side coordinator for detail tabs and check-to-evidence navigation.
+- `run/run-detail-tabs.tsx`: client-side coordinator for detail tabs, check-to-evidence navigation, and evidence highlight targets.
 - `run/run-summary-card.tsx`: prominent run summary panel.
 - `run/run-findings-summary.tsx`: compact findings summary for checks that need review, with optional evidence navigation.
 - `run/run-metrics-grid.tsx`: compact duration, load, console, and network metrics.
@@ -60,7 +60,7 @@ Important components:
 - `run/run-checks-list.tsx`: QA check result list with optional evidence navigation actions.
 - `run/browser-trail.tsx`: run timeline.
 - `evidence/artifact-viewer.tsx`: desktop/mobile screenshot preview and modal view.
-- `evidence/run-evidence-list.tsx`: evidence filters, grouped evidence rendering, and selection state.
+- `evidence/run-evidence-list.tsx`: evidence filters, grouped evidence rendering, selection state, and scroll/highlight targets from linked checks.
 - `evidence/evidence-section.tsx`: reusable grouped evidence section.
 - `evidence/evidence-item.tsx`: selectable evidence item with copy and detail affordances.
 - `evidence/evidence-detail-modal.tsx`: modal for inspecting structured evidence content, timestamps, and page/resource URL context.

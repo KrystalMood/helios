@@ -94,13 +94,13 @@ Completed:
 - Structured UI evidence records derived from persisted run evidence
 - Evidence detail modal with type, timestamp, observed page URL, related resource URL, raw content, and copy action
 - Keyboard and backdrop close behavior for evidence detail inspection
-- QA checks link to their relevant evidence filter for newly created runs
+- QA checks link to their relevant evidence filter with scroll and highlight feedback
 - Run overview shows a findings summary derived from warning and failed checks
 - Vitest unit tests for shared helpers including checks, evidence transforms, performance labels, validators, routes, formatters, and error messages
 
 Next:
 
-- Link checks and findings to their supporting evidence
+- Persist item-level supporting evidence relationships when evidence is stored as first-class records
 - Add evidence status and stronger source metadata when individual evidence is persisted
 - Consider a normalized `Evidence` database model when cross-run evidence querying becomes necessary
 

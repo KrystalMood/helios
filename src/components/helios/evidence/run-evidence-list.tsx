@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   COPY_FEEDBACK_TIMEOUT_MS,
   MAX_VISIBLE_EVIDENCE_ITEMS,
@@ -23,6 +23,8 @@ type RunEvidenceListProps = {
   failedRequests?: string[];
   activeFilter?: EvidenceFilter;
   onFilterChange?: (filter: EvidenceFilter) => void;
+  scrollTarget?: EvidenceFilter | null;
+  onScrollComplete?: () => void;
 };
 
 export function RunEvidenceList({
@@ -34,6 +36,8 @@ export function RunEvidenceList({
   failedRequests,
   activeFilter: controlledActiveFilter,
   onFilterChange,
+  scrollTarget,
+  onScrollComplete,
 }: RunEvidenceListProps) {
   const [showAllEvidence, setShowAllEvidence] = useState(false);
   const [copiedEvidence, setCopiedEvidence] = useState<string | null>(null);
@@ -45,6 +49,29 @@ export function RunEvidenceList({
   );
 
   const activeFilter = controlledActiveFilter ?? uncontrolledActiveFilter;
+
+  useEffect(() => {
+    if (!scrollTarget) return;
+
+    const scrollTimeoutId = window.setTimeout(() => {
+      const element = document.getElementById(
+        `evidence-section-${scrollTarget}`,
+      );
+      element?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 200);
+
+    const highlightTimeoutId = window.setTimeout(() => {
+      onScrollComplete?.();
+    }, 1400);
+
+    return () => {
+      window.clearTimeout(scrollTimeoutId);
+      window.clearTimeout(highlightTimeoutId);
+    };
+  }, [scrollTarget, onScrollComplete]);
 
   const handleFilterChange = (filter: EvidenceFilter) => {
     if (controlledActiveFilter === undefined) {
@@ -256,16 +283,26 @@ export function RunEvidenceList({
             return null;
           }
 
+          const isHighlighted = section.id === scrollTarget;
+          const highlightClass = isHighlighted
+            ? "ring-2 ring-accent/40 bg-accent/5"
+            : "ring-0 ring-transparent bg-transparent";
+
           return (
-            <EvidenceSection
+            <div
               key={section.id}
-              title={section.title}
-              items={section.items}
-              totalCount={section.totalCount}
-              copiedEvidence={copiedEvidence}
-              onCopyEvidence={handleCopyEvidence}
-              onSelectEvidence={setSelectedEvidence}
-            />
+              id={`evidence-section-${section.id}`}
+              className={`rounded-lg p-2 -m-2 transition-all duration-1000 ${highlightClass}`}
+            >
+              <EvidenceSection
+                title={section.title}
+                items={section.items}
+                totalCount={section.totalCount}
+                copiedEvidence={copiedEvidence}
+                onCopyEvidence={handleCopyEvidence}
+                onSelectEvidence={setSelectedEvidence}
+              />
+            </div>
           );
         })}
       </div>
