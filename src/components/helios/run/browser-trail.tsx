@@ -1,6 +1,7 @@
 import type { TrailStep } from "@/lib/helios/shared/types";
 import { formatTimestamp } from "@/lib/helios/shared/format";
 import { EmptyState } from "../ui/empty-state";
+import { Compass } from "lucide-react";
 
 type BrowserTrailProps = {
   trail: TrailStep[];
@@ -12,6 +13,7 @@ export function BrowserTrail({ trail }: BrowserTrailProps) {
       <EmptyState
         title="No browser trail"
         description="Helios couldn't capture the execution trail for this run."
+        icon={Compass}
       />
     );
   }

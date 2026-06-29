@@ -2,6 +2,7 @@ import type { CheckResult, EvidenceType } from "@/lib/helios/shared/types";
 import { getFindingsFromChecks } from "@/lib/helios/shared/findings";
 import { formatLabel } from "@/lib/helios/shared/format";
 import { EmptyState } from "@/components/helios/ui/empty-state";
+import { ShieldCheck } from "lucide-react";
 
 type RunFindingsSummaryProps = {
   checks: CheckResult[];
@@ -30,6 +31,7 @@ export function RunFindingsSummary({
       <EmptyState
         title="No findings to review"
         description="All QA checks passed or only informational checks were recorded."
+        icon={ShieldCheck}
       />
     );
   }
