@@ -8,6 +8,7 @@ import type { RunEvidence } from "@/lib/helios/shared/types";
 
 import { EvidenceSection } from "@/components/helios/evidence/evidence-section";
 import { EmptyState } from "../ui/empty-state";
+import { CheckCircle, ImageOff, Terminal, WifiOff } from "lucide-react";
 import { transformRawEvidence } from "@/lib/helios/shared/evidence-transformer";
 import { EvidenceDetailModal } from "@/components/helios/evidence/evidence-detail-modal";
 
@@ -105,6 +106,7 @@ export function RunEvidenceList({
         totalCount: brokenImagesCount,
         emptyTitle: "No broken images",
         emptyDesc: "No broken images were detected in this run.",
+        icon: ImageOff,
       },
       {
         id: "console" as const,
@@ -115,6 +117,7 @@ export function RunEvidenceList({
         totalCount: consoleErrorCount,
         emptyTitle: "No console errors",
         emptyDesc: "No console errors were logged in this run.",
+        icon: Terminal,
       },
       {
         id: "network" as const,
@@ -125,6 +128,7 @@ export function RunEvidenceList({
         totalCount: failedRequestCount,
         emptyTitle: "No failed requests",
         emptyDesc: "No network requests failed in this run.",
+        icon: WifiOff,
       },
     ];
   }, [
@@ -167,6 +171,7 @@ export function RunEvidenceList({
       <EmptyState
         title="No issues found"
         description="This run didn't detect any broken images, console errors, or failed requests."
+        icon={CheckCircle}
       />
     );
   }
@@ -242,6 +247,7 @@ export function RunEvidenceList({
                 key={`empty-${section.id}`}
                 title={section.emptyTitle}
                 description={section.emptyDesc}
+                icon={section.icon}
               />
             );
           }

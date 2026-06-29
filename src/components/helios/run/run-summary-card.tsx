@@ -12,6 +12,7 @@ export function RunSummaryCard({ summary }: RunSummaryCardProps) {
         <EmptyState
           title="No Agent Summary Available"
           description="The QA agent did not generate a summary for this run."
+          icon={Sparkles}
         />
       </div>
     );

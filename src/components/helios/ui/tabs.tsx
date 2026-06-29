@@ -32,7 +32,7 @@ export function Tabs({ tabs, activeTab, onTabChange }: TabsProps) {
     <div>
       <div
         role="tablist"
-        className="flex w-full items-center gap-4 border-b border-border mb-6 overflow-x-auto scrollbar-none"
+        className="inline-flex p-1 rounded-xl bg-panel/40 border border-border/40 mb-6 overflow-x-auto scrollbar-none gap-1"
       >
         {tabs.map((tab) => {
           const isActive = currentActiveTab === tab.id;
@@ -45,7 +45,7 @@ export function Tabs({ tabs, activeTab, onTabChange }: TabsProps) {
               aria-controls={`panel-${tab.id}`}
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
-              className={`whitespace-nowrap pb-3 text-sm font-medium transition-colors border-b-2 -mb-px ${isActive ? "border-foreground text-foreground" : "border-transparent text-muted hover:text-foreground"}`}
+              className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200 ${isActive ? "bg-card text-foreground shadow-sm border border-border/20" : "text-muted hover:text-foreground hover:bg-muted/10 border border-transparent"}`}
             >
               {tab.label}
             </button>

@@ -7,6 +7,7 @@ import type {
 } from "@/lib/helios/shared/types";
 import { formatLabel } from "@/lib/helios/shared/format";
 import { EmptyState } from "../ui/empty-state";
+import { ClipboardList } from "lucide-react";
 
 type RunChecksListProps = {
   checks: CheckResult[];
@@ -25,6 +26,7 @@ export function RunChecksList({ checks, onViewEvidence }: RunChecksListProps) {
       <EmptyState
         title="No checks run"
         description="No automated QA checks were executed for this run."
+        icon={ClipboardList}
       />
     );
   }
