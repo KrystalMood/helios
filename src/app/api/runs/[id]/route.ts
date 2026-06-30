@@ -12,6 +12,7 @@ export async function GET(
   try {
     const run = await prisma.run.findUnique({
       where: { id },
+      include: { evidence: true },
     });
 
     if (!run) {

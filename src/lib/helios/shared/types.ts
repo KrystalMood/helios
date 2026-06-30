@@ -45,6 +45,7 @@ export type LatestRun = {
   consoleErrors?: string[];
   failedRequests?: string[];
   loadMetrics?: LoadMetrics;
+  evidence?: RunEvidence[];
 };
 
 export type CreateRunResponse = {
@@ -77,6 +78,7 @@ export type OverviewCardData = {
 };
 
 export type EvidenceType = "image" | "console" | "network";
+export type EvidenceStatus = "open" | "resolved" | "ignored";
 
 export type RunEvidence = {
   id: string;
@@ -85,4 +87,5 @@ export type RunEvidence = {
   pageUrl: string;
   resourceUrl?: string;
   capturedAt: string;
+  status: EvidenceStatus;
 };

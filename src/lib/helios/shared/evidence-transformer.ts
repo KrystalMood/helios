@@ -35,6 +35,7 @@ function toRunEvidence(
     pageUrl,
     resourceUrl: tryExtractUrl(content),
     capturedAt,
+    status: "open",
   }));
 }
 
