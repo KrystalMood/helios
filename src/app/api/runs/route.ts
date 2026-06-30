@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { createChecksFromRunResult } from "@/lib/helios/shared/checks";
 import { runRecordToLatestRun } from "@/lib/helios/server/run-record";
 import { getErrorMessage } from "@/lib/helios/shared/errors";
+import { transformRawEvidence } from "@/lib/helios/shared/evidence-transformer";
 
 type CreateRunRequest = {
   url?: string;
@@ -85,6 +86,14 @@ export async function POST(request: Request) {
     );
   }
   const checks = createChecksFromRunResult(result);
+  const structuredEvidence = transformRawEvidence({
+    runId: result.id,
+    capturedAt: result.finishedAt ?? result.createdAt,
+    pageUrl: result.finalUrl ?? result.startingUrl,
+    brokenImages: result.brokenImages,
+    consoleErrors: result.consoleErrors,
+    failedRequests: result.failedRequests,
+  });
 
   try {
     await prisma.run.create({
@@ -106,6 +115,18 @@ export async function POST(request: Request) {
         consoleErrors: result.consoleErrors,
         failedRequests: result.failedRequests,
         loadMetrics: result.loadMetrics,
+        evidence:
+          structuredEvidence.length > 0
+            ? {
+                create: structuredEvidence.map((item) => ({
+                  type: item.type,
+                  content: item.content,
+                  pageUrl: item.pageUrl,
+                  resourceUrl: item.resourceUrl,
+                  status: item.status,
+                })),
+              }
+            : undefined,
       },
     });
   } catch (dbError) {
