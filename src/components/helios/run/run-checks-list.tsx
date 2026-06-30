@@ -7,7 +7,7 @@ import type {
 } from "@/lib/helios/shared/types";
 import { formatLabel } from "@/lib/helios/shared/format";
 import { EmptyState } from "../ui/empty-state";
-import { ClipboardList } from "lucide-react";
+import { ClipboardList, ArrowUpRight } from "lucide-react";
 
 type RunChecksListProps = {
   checks: CheckResult[];
@@ -57,9 +57,10 @@ export function RunChecksList({ checks, onViewEvidence }: RunChecksListProps) {
                 <button
                   type="button"
                   onClick={() => onViewEvidence(check.evidenceType!)}
-                  className="mt-2 text-xs font-medium text-accent transition hover:underline"
+                  className="group mt-2 flex w-fit items-center gap-1 text-xs font-medium text-accent transition"
                 >
-                  View evidence
+                  <span className="group-hover:underline">View evidence</span>
+                  <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </button>
               ) : null}
             </li>

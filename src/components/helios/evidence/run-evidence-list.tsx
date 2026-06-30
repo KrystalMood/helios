@@ -8,19 +8,17 @@ import type { RunEvidence } from "@/lib/helios/shared/types";
 
 import { EvidenceSection } from "@/components/helios/evidence/evidence-section";
 import { EmptyState } from "../ui/empty-state";
-import { CheckCircle, ImageOff, Terminal, WifiOff } from "lucide-react";
-import { transformRawEvidence } from "@/lib/helios/shared/evidence-transformer";
+import { CheckCircle } from "lucide-react";
 import { EvidenceDetailModal } from "@/components/helios/evidence/evidence-detail-modal";
-
-export type EvidenceFilter = "all" | "images" | "console" | "network";
+import {
+  type EvidenceFilter,
+  getEvidenceSections,
+  canToggleEvidence,
+  getVisibleEvidenceText,
+} from "@/lib/helios/shared/evidence-sections";
 
 type RunEvidenceListProps = {
-  runId: string;
-  capturedAt: string;
-  pageUrl: string;
-  brokenImages?: string[];
-  consoleErrors?: string[];
-  failedRequests?: string[];
+  evidence: RunEvidence[];
   activeFilter?: EvidenceFilter;
   onFilterChange?: (filter: EvidenceFilter) => void;
   scrollTarget?: EvidenceFilter | null;
@@ -28,12 +26,7 @@ type RunEvidenceListProps = {
 };
 
 export function RunEvidenceList({
-  runId,
-  capturedAt,
-  pageUrl,
-  brokenImages,
-  consoleErrors,
-  failedRequests,
+  evidence,
   activeFilter: controlledActiveFilter,
   onFilterChange,
   scrollTarget,
@@ -87,18 +80,6 @@ export function RunEvidenceList({
     ? undefined
     : MAX_VISIBLE_EVIDENCE_ITEMS;
 
-  const brokenImagesCount = brokenImages?.length ?? 0;
-  const consoleErrorCount = consoleErrors?.length ?? 0;
-  const failedRequestCount = failedRequests?.length ?? 0;
-
-  const canToggleEvidence =
-    ((activeFilter === "all" || activeFilter === "images") &&
-      brokenImagesCount > MAX_VISIBLE_EVIDENCE_ITEMS) ||
-    ((activeFilter === "all" || activeFilter === "console") &&
-      consoleErrorCount > MAX_VISIBLE_EVIDENCE_ITEMS) ||
-    ((activeFilter === "all" || activeFilter === "network") &&
-      failedRequestCount > MAX_VISIBLE_EVIDENCE_ITEMS);
-
   const handleCopyEvidence = async (value: string) => {
     await navigator.clipboard.writeText(value);
     setCopiedEvidence(value);
@@ -110,80 +91,21 @@ export function RunEvidenceList({
     }, COPY_FEEDBACK_TIMEOUT_MS);
   };
 
-  const totalEvidenceCount =
-    brokenImagesCount + consoleErrorCount + failedRequestCount;
+  const totalEvidenceCount = evidence.length;
 
-  const sectionConfigs = useMemo(() => {
-    const allEvidence = transformRawEvidence({
-      runId,
-      capturedAt,
-      pageUrl,
-      brokenImages,
-      consoleErrors,
-      failedRequests,
-    });
+  const sectionConfigs = useMemo(
+    () => getEvidenceSections(evidence, maxVisibleItems),
+    [evidence, maxVisibleItems],
+  );
 
-    return [
-      {
-        id: "images" as const,
-        title: "Broken images",
-        items: allEvidence
-          .filter((e) => e.type === "image")
-          .slice(0, maxVisibleItems),
-        totalCount: brokenImagesCount,
-        emptyTitle: "No broken images",
-        emptyDesc: "No broken images were detected in this run.",
-        icon: ImageOff,
-      },
-      {
-        id: "console" as const,
-        title: "Console errors",
-        items: allEvidence
-          .filter((e) => e.type === "console")
-          .slice(0, maxVisibleItems),
-        totalCount: consoleErrorCount,
-        emptyTitle: "No console errors",
-        emptyDesc: "No console errors were logged in this run.",
-        icon: Terminal,
-      },
-      {
-        id: "network" as const,
-        title: "Failed network requests",
-        items: allEvidence
-          .filter((e) => e.type === "network")
-          .slice(0, maxVisibleItems),
-        totalCount: failedRequestCount,
-        emptyTitle: "No failed requests",
-        emptyDesc: "No network requests failed in this run.",
-        icon: WifiOff,
-      },
-    ];
-  }, [
-    runId,
-    capturedAt,
-    pageUrl,
-    brokenImages,
-    consoleErrors,
-    failedRequests,
-    maxVisibleItems,
-    brokenImagesCount,
-    consoleErrorCount,
-    failedRequestCount,
-  ]);
+  const brokenImagesCount = sectionConfigs[0].totalCount;
+  const consoleErrorCount = sectionConfigs[1].totalCount;
+  const failedRequestCount = sectionConfigs[2].totalCount;
+
+  const showToggle = canToggleEvidence(sectionConfigs, activeFilter);
 
   const handleCopyAllEvidence = async () => {
-    const visibleText = sectionConfigs
-      .filter(
-        (section) => activeFilter === "all" || activeFilter === section.id,
-      )
-      .filter((section) => section.items.length > 0)
-      .map((section) =>
-        [
-          `${section.title} (${section.items.length})`,
-          ...section.items.map((evidence) => `- ${evidence.content}`),
-        ].join("\n"),
-      )
-      .join("\n\n");
+    const visibleText = getVisibleEvidenceText(sectionConfigs, activeFilter);
 
     await navigator.clipboard.writeText(visibleText);
     setHasCopiedAllEvidence(true);
@@ -250,7 +172,7 @@ export function RunEvidenceList({
             </button>
           )}
 
-          {canToggleEvidence ? (
+          {showToggle ? (
             <button
               type="button"
               onClick={() => setShowAllEvidence((current) => !current)}

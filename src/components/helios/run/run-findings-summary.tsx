@@ -2,7 +2,7 @@ import type { CheckResult, EvidenceType } from "@/lib/helios/shared/types";
 import { getFindingsFromChecks } from "@/lib/helios/shared/findings";
 import { formatLabel } from "@/lib/helios/shared/format";
 import { EmptyState } from "@/components/helios/ui/empty-state";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, ArrowUpRight } from "lucide-react";
 
 type RunFindingsSummaryProps = {
   checks: CheckResult[];
@@ -68,9 +68,12 @@ export function RunFindingsSummary({
                 <button
                   type="button"
                   onClick={() => onViewEvidence(evidenceType)}
-                  className="mt-2 text-xs font-medium text-accent transition hover:underline"
+                  className="group mt-2 flex w-fit items-center gap-1 text-xs font-medium text-accent transition"
                 >
-                  {finding.evidenceLabel}
+                  <span className="group-hover:underline">
+                    {finding.evidenceLabel}
+                  </span>
+                  <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </button>
               )}
             </li>

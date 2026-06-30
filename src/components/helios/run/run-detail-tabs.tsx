@@ -4,10 +4,8 @@ import { useState } from "react";
 import type { EvidenceType, LatestRun } from "@/lib/helios/shared/types";
 import { type TabItem, Tabs } from "@/components/helios/ui/tabs";
 import { RunOverview } from "@/components/helios/run/run-overview";
-import {
-  RunEvidenceList,
-  type EvidenceFilter,
-} from "@/components/helios/evidence/run-evidence-list";
+import { RunEvidenceList } from "@/components/helios/evidence/run-evidence-list";
+import { type EvidenceFilter } from "@/lib/helios/shared/evidence-sections";
 import { RunChecksList } from "@/components/helios/run/run-checks-list";
 import { BrowserTrail } from "@/components/helios/run/browser-trail";
 import { RunFindingsSummary } from "@/components/helios/run/run-findings-summary";
@@ -83,12 +81,7 @@ export function RunDetailTabs({ run }: RunDetailTabsProps) {
       content: (
         <RunEvidenceList
           key={activeEvidenceFilter}
-          runId={run.id}
-          capturedAt={run.finishedAt ?? run.createdAt}
-          pageUrl={run.finalUrl ?? run.startingUrl}
-          brokenImages={run.brokenImages}
-          consoleErrors={run.consoleErrors}
-          failedRequests={run.failedRequests}
+          evidence={run.evidence ?? []}
           activeFilter={activeEvidenceFilter}
           onFilterChange={(filter) => setActiveEvidenceFilter(filter)}
           scrollTarget={scrollTarget}
