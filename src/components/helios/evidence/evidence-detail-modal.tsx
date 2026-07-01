@@ -2,12 +2,21 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { COPY_FEEDBACK_TIMEOUT_MS } from "@/lib/helios/shared/constants";
-import type { RunEvidence } from "@/lib/helios/shared/types";
+import {
+  EVIDENCE_STATUSES,
+  type EvidenceStatus,
+  type RunEvidence,
+} from "@/lib/helios/shared/types";
 import { formatTimestamp } from "@/lib/helios/shared/format";
+import {
+  STATUS_STYLES,
+  INACTIVE_STYLE,
+} from "@/lib/helios/shared/evidence-sections";
 
 type EvidenceDetailModalProps = {
   evidence: RunEvidence;
   onClose: () => void;
+  onStatusChange?: (status: EvidenceStatus) => void;
 };
 
 const evidenceTypeLabels: Record<RunEvidence["type"], string> = {
@@ -19,6 +28,7 @@ const evidenceTypeLabels: Record<RunEvidence["type"], string> = {
 export function EvidenceDetailModal({
   evidence,
   onClose,
+  onStatusChange,
 }: EvidenceDetailModalProps) {
   const [hasCopiedContent, setHasCopiedContent] = useState(false);
 
@@ -88,6 +98,29 @@ export function EvidenceDetailModal({
           >
             {hasCopiedContent ? "Copied!" : "Copy content"}
           </button>
+        </div>
+
+        <div className="mt-4 flex items-center gap-2">
+          <span className="text-xs font-medium text-muted">Status:</span>
+          <div className="flex items-center gap-1.5">
+            {EVIDENCE_STATUSES.map((statusOption) => {
+              const isActive = evidence.status === statusOption;
+              const buttonStyle = isActive
+                ? STATUS_STYLES[statusOption]
+                : INACTIVE_STYLE;
+
+              return (
+                <button
+                  key={statusOption}
+                  type="button"
+                  onClick={() => onStatusChange?.(statusOption)}
+                  className={`rounded-full border px-2.5 py-0.5 text-xs font-medium capitalize transition-all ${buttonStyle}`}
+                >
+                  {statusOption}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div className="mt-4">

@@ -9,7 +9,12 @@ import { runRecordToLatestRun } from "@/lib/helios/server/run-record";
 import { RunDetailTabs } from "@/components/helios/run/run-detail-tabs";
 
 const getRunById = cache(async (id: string) => {
-  return prisma.run.findUnique({ where: { id } });
+  return prisma.run.findUnique({
+    where: { id },
+    include: {
+      evidence: true,
+    },
+  });
 });
 
 export async function generateMetadata({

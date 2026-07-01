@@ -4,7 +4,7 @@ import {
   COPY_FEEDBACK_TIMEOUT_MS,
   MAX_VISIBLE_EVIDENCE_ITEMS,
 } from "@/lib/helios/shared/constants";
-import type { RunEvidence } from "@/lib/helios/shared/types";
+import type { EvidenceStatus, RunEvidence } from "@/lib/helios/shared/types";
 
 import { EvidenceSection } from "@/components/helios/evidence/evidence-section";
 import { EmptyState } from "../ui/empty-state";
@@ -23,6 +23,7 @@ type RunEvidenceListProps = {
   onFilterChange?: (filter: EvidenceFilter) => void;
   scrollTarget?: EvidenceFilter | null;
   onScrollComplete?: () => void;
+  onStatusChange?: (evidenceId: string, newStatus: EvidenceStatus) => void;
 };
 
 export function RunEvidenceList({
@@ -31,6 +32,7 @@ export function RunEvidenceList({
   onFilterChange,
   scrollTarget,
   onScrollComplete,
+  onStatusChange,
 }: RunEvidenceListProps) {
   const [showAllEvidence, setShowAllEvidence] = useState(false);
   const [copiedEvidence, setCopiedEvidence] = useState<string | null>(null);
@@ -233,6 +235,12 @@ export function RunEvidenceList({
         <EvidenceDetailModal
           evidence={selectedEvidence}
           onClose={() => setSelectedEvidence(null)}
+          onStatusChange={(newStatus) => {
+            onStatusChange?.(selectedEvidence.id, newStatus);
+            setSelectedEvidence((prev) =>
+              prev ? { ...prev, status: newStatus } : null,
+            );
+          }}
         />
       )}
     </div>

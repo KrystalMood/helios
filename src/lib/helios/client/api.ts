@@ -1,4 +1,9 @@
-import type { CreateRunResponse, LatestRun } from "@/lib/helios/shared/types";
+import type {
+  CreateRunResponse,
+  EvidenceStatus,
+  LatestRun,
+  RunEvidence,
+} from "@/lib/helios/shared/types";
 
 export type ApiErrorResponse = {
   error: string;
@@ -67,4 +72,26 @@ export async function clearRecentRuns(): Promise<void> {
     const result = await response.json();
     throw result;
   }
+}
+
+export async function updateEvidenceStatus(
+  runId: string,
+  evidenceId: string,
+  status: EvidenceStatus,
+): Promise<RunEvidence> {
+  const response = await fetch(`/api/runs/${runId}/evidence/${evidenceId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ status }),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw result;
+  }
+
+  return result as RunEvidence;
 }

@@ -1,7 +1,16 @@
 import type { LucideIcon } from "lucide-react";
 import { ImageOff, Terminal, WifiOff } from "lucide-react";
 import { MAX_VISIBLE_EVIDENCE_ITEMS } from "@/lib/helios/shared/constants";
-import type { RunEvidence } from "@/lib/helios/shared/types";
+import type { RunEvidence, EvidenceStatus } from "@/lib/helios/shared/types";
+
+export const STATUS_STYLES: Record<EvidenceStatus, string> = {
+  open: "border-amber-500/40 text-amber-300 bg-amber-500/10",
+  resolved: "border-emerald-500/40 text-emerald-300 bg-emerald-500/10",
+  ignored: "border-border text-muted bg-card",
+};
+
+export const INACTIVE_STYLE =
+  "border-border/30 bg-transparent text-muted hover:text-foreground hover:bg-card/30";
 
 export type EvidenceFilter = "all" | "images" | "console" | "network";
 

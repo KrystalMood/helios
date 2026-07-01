@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import type { EvidenceType, LatestRun } from "@/lib/helios/shared/types";
+import { updateEvidenceStatus } from "@/lib/helios/client/api";
+import type {
+  EvidenceStatus,
+  EvidenceType,
+  LatestRun,
+} from "@/lib/helios/shared/types";
 import { type TabItem, Tabs } from "@/components/helios/ui/tabs";
 import { RunOverview } from "@/components/helios/run/run-overview";
 import { RunEvidenceList } from "@/components/helios/evidence/run-evidence-list";
@@ -30,12 +35,9 @@ export function RunDetailTabs({ run }: RunDetailTabsProps) {
   const [activeEvidenceFilter, setActiveEvidenceFilter] =
     useState<EvidenceFilter>("all");
   const [scrollTarget, setScrollTarget] = useState<EvidenceFilter | null>(null);
+  const [evidence, setEvidence] = useState(run.evidence ?? []);
   const findingCount = getFindingsFromChecks(run.checks).length;
-  const evidenceCount =
-    (run.brokenImages?.length ?? 0) +
-    (run.consoleErrors?.length ?? 0) +
-    (run.failedRequests?.length ?? 0);
-
+  const evidenceCount = evidence.length;
   const checksCount = run.checks.length;
   const trailCount = run.trail.length;
 
@@ -48,6 +50,31 @@ export function RunDetailTabs({ run }: RunDetailTabsProps) {
 
   const handleScrollComplete = () => {
     setScrollTarget(null);
+  };
+
+  const handleUpdateEvidenceStatus = async (
+    evidenceId: string,
+    newStatus: EvidenceStatus,
+  ) => {
+    const originalEvidence = [...evidence];
+
+    setEvidence((prev) =>
+      prev.map((item) =>
+        item.id === evidenceId
+          ? {
+              ...item,
+              status: newStatus,
+            }
+          : item,
+      ),
+    );
+
+    try {
+      await updateEvidenceStatus(run.id, evidenceId, newStatus);
+    } catch (error) {
+      console.error("Failed to update evidence status:", error);
+      setEvidence(originalEvidence);
+    }
   };
 
   const tabs: TabItem[] = [
@@ -81,7 +108,8 @@ export function RunDetailTabs({ run }: RunDetailTabsProps) {
       content: (
         <RunEvidenceList
           key={activeEvidenceFilter}
-          evidence={run.evidence ?? []}
+          evidence={evidence}
+          onStatusChange={handleUpdateEvidenceStatus}
           activeFilter={activeEvidenceFilter}
           onFilterChange={(filter) => setActiveEvidenceFilter(filter)}
           scrollTarget={scrollTarget}

@@ -78,7 +78,8 @@ export type OverviewCardData = {
 };
 
 export type EvidenceType = "image" | "console" | "network";
-export type EvidenceStatus = "open" | "resolved" | "ignored";
+export const EVIDENCE_STATUSES = ["open", "resolved", "ignored"] as const;
+export type EvidenceStatus = (typeof EVIDENCE_STATUSES)[number];
 
 export type RunEvidence = {
   id: string;
